@@ -1,7 +1,7 @@
 # qroxy
 Self-hosted light-weight server proxy for YoutubeDL.
 
-Run with python3 and yt-dlp (or your preferred fork of youtubeDL) installed.
+Run with python3 and yt-dlp installed.
 
 Currently in alpha.
 
