@@ -17,4 +17,4 @@ Prep:
 
 Usage:
 Run the server via `python3 /path/to/repo/qroxy.py`
-Then access the url via `https://mydomainorip/?url=https://youtube.com/watch?v=VIDEO_ID` to receive a 301 redirect to the direct link video url.
+Then access the url via `https://mydomainorip/?url=https://youtube.com/watch?v=VIDEO_ID` to receive a 302 redirect to the direct link video url.
