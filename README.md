@@ -3,7 +3,7 @@ Self-hosted light-weight server proxy for YoutubeDL.
 
 Run with python3 and yt-dlp (or your preferred fork of youtubeDL) installed.
 
-Currently in alpha pending next release with early caching.
+Currently in alpha.
 
 Prep:
 - Setup a public facing server (optionally with an associated domain name)
