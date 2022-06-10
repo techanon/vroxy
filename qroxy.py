@@ -29,13 +29,17 @@ class Item:
         self.hostname = urlparse(url).hostname
         self.resolved_url = None
         self.resolved_id = None
+        self.resolved_format = None
         self.sort = sort
         self.expiry = 0
         self.processing = True
 
     def resolve(self, f):
+        if self.sort:
+            f = f["formats"][-1]
         self.resolved_url = f["url"]
         self.resolved_id = f["format_id"]
+        self.resolved_format = f["format"]
         self.expiry = self.extractExpiry()
         self.processing = False
 
@@ -49,9 +53,6 @@ expire_regex = re.compile(r"exp(?:ir(?:es?|ation))?=(\d+)")
 
 
 def format_selector(format_list, item):
-    format_list.reverse()
-    # print(format_list[0].keys())
-    # for form in format_list: print(form["format_id"])
     # print("", flush=True)
 
     best = format_list[0]
@@ -124,8 +125,9 @@ class YTDLProxy(web.View):
         host = urlparse(url).hostname
         # if format ID is provided, retrieve that explicitly
         if fid:
-            ytdl_opts["f"] = fid
+            ytdl_opts["format"] = fid
             cacheId = fid
+            sort = None
         # otherwise use the "best" sorting based on the sort available
         else:
             # use either the given user sort, or extrapolate for the given preset mode
@@ -154,7 +156,7 @@ class YTDLProxy(web.View):
                 print("Cache hit")
                 print(item.resolved_url)
                 print(
-                    f"{item.resolved_id} expires in {item.expiry - time.time()} seconds", flush=True
+                    f"{item.resolved_format} expires in {item.expiry - time.time()} seconds", flush=True
                 )
                 return item.resolved_url or ""
 
@@ -165,16 +167,17 @@ class YTDLProxy(web.View):
         while pool.count >= pool_max:
             if time.time() > timeout: return None
             await sleep(1)
-
+        print(ytdl_opts)
         with YoutubeDL(ytdl_opts) as ytdl:
-            pool.add()
             print(f"Resolving '{cacheId}' for url: {url}")
             print("Fetching fresh info", flush=True)
+            pool.add()
             result = ytdl.extract_info(url, download=False)
-            format_item = format_selector(result["formats"], item)
+            # print(result.keys())
+            item.resolve(result)
             pool.remove()
-            item.resolve(format_item)
-            print(f"{item.resolved_id} expires in {item.expiry - time.time()} seconds", flush=True)
+            print(item.resolved_url)
+            print(f"{item.resolved_format} expires in {item.expiry - time.time()} seconds", flush=True)
 
         print("")
         return item.resolved_url or ""
