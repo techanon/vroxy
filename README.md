@@ -1,9 +1,9 @@
-# qroxy
+# Qroxy
 Self-hosted light-weight server proxy for YoutubeDL.
 
-Run with python3 and yt-dlp (or your preferred fork of youtubeDL) installed.
+Run with python3 and yt-dlp installed.
 
-Currently in alpha pending next release with early caching.
+Currently in alpha.
 
 Prep:
 - Setup a public facing server (optionally with an associated domain name)
@@ -17,7 +17,7 @@ Prep:
 
 Usage:
 Run the server via `python3 /path/to/repo/qroxy.py`
-Then access the url via `https://mydomainorip/?url=https://youtube.com/watch?v=VIDEO_ID` to receive a 301 redirect to the direct link video url.
+Then access the url via `https://mydomainorip/?url=https://youtube.com/watch?v=VIDEO_ID` to receive a 307 redirect to the direct link video url.
 
 Optional parameters:
 - `f`: Specific format id for the given url that is desired. This is something that is looked up ahead of time via manually checking --list-formats in ytdl.
