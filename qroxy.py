@@ -84,7 +84,7 @@ sort_opts = {
     # sort preferring audio+video with the lowest quality
     2: ["hasvid", "hasaud", "+res"],
     # sort preferring highest quality with priority on VP9 codec for platform compatibility
-    3: ["hasvid", "res", "codec:vp9"],
+    3: ["codec:vp9", "hasvid", "res"],
     # sort preferring highest quality without concern for codec or audio
     4: ["hasvid", "res"],
 }
