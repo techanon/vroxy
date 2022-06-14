@@ -3,6 +3,7 @@ from configparser import ConfigParser
 from asyncio import sleep
 import time
 import re
+import random
 from os import path
 from urllib.parse import urlparse
 
@@ -104,7 +105,8 @@ class YTDLProxy(web.View):
         if url: return web.Response(status=307, headers={"Location": url})
         else: return web.Response(status=408)
 
-    async def resolveUrl(self):
+    async def resolveUrl(self) -> str:
+        rid = random.getrandbits(16)
         global nextGCTime
         curTime = time.time()
         # clean up the cache every hour
@@ -144,18 +146,18 @@ class YTDLProxy(web.View):
         if _id in cache_map:
             item = cache_map[_id]
             if item.expiry < curTime:
-                print("Cache expired")
+                print(f"[{rid}] Cache expired")
                 del cache_map[_id]
             else:
                 # wait until the other request for the same url resolves,
                 # then use the cached url from that
                 while item.processing:
                     await sleep(1)
-                print(f"Resolving '{cacheId}' for url: {url}")
-                print("Cache hit")
+                print(f"[{rid}] Resolving '{cacheId}' for url: {url}")
+                print(f"[{rid}] Cache hit")
                 print(item.resolved_url)
                 print(
-                    f"{item.resolved_format} expires in {item.expiry - curTime} seconds", flush=True
+                    f"[{rid}] {item.resolved_format} expires in {item.expiry - curTime} seconds", flush=True
                 )
                 item.lastAccess = curTime
                 return item.resolved_url or ""
@@ -169,17 +171,16 @@ class YTDLProxy(web.View):
             await sleep(1)
         print(ytdl_opts)
         with YoutubeDL(ytdl_opts) as ytdl:
-            print(f"Resolving '{cacheId}' for url: {url}")
-            print("Fetching fresh info", flush=True)
+            print(f"[{rid}] Resolving '{cacheId}' for url: {url}")
+            print(f"[{rid}] Fetching fresh info", flush=True)
             pool.add()
             result = ytdl.extract_info(url, download=False)
             # print(result.keys())
             item.resolve(result)
             pool.remove()
             print(item.resolved_url)
-            print(f"{item.resolved_format} expires in {item.expiry - curTime} seconds", flush=True)
+            print(f"[{rid}] {item.resolved_format} expires in {item.expiry - curTime} seconds", flush=True)
 
-        print("")
         item.lastAccess = curTime
         return item.resolved_url or ""
 
