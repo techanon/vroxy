@@ -13,6 +13,9 @@ Debian/Ubuntu Setup:
     - The program will be located at `/var/qroxy/` folder.
     - If running on a raw debian install, you will either need to login as root `su -` or install sudo and add yourself as a sudo user.
 - Run the reboot script to start the service: `bash /var/qroxy/tmux_reboot.sh`
+- This reboot script will also implicitly check for the latest updates to the Qroxy repo.
+- You can examine the service log with: `tmux attach-session -t qroxy`
+- Exit tmux with `CTRL+B` followed by the `D` key.
 
 Generic Setup:
 - Setup a public facing server on your VPS or whatever.
