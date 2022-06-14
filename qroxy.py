@@ -102,6 +102,7 @@ class YTDLProxy(web.View):
         else: return web.Response(status=408)
 
     async def resolveUrl(self):
+        global nextGCTime
         curTime = time.time()
         # clean up the cache every hour
         if curTime > nextGCTime:
