@@ -76,7 +76,7 @@ mode_map = {
 }
 sort_opts = {
     # decent sized media with audio+video, generally compatible with all platforms
-    0: ["hasvid", "hasaud", "res:1440"],
+    0: ["codec:avc", "hasvid", "hasaud", "res:1440"],
     # sort preferring audio+video with the highest quality
     1: ["hasvid", "hasaud", "res"],
     # sort preferring audio+video with the lowest quality
