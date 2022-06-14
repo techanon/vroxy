@@ -56,7 +56,7 @@ pool = PoolCount()
 routes = web.RouteTableDef()
 
 config = ConfigParser({"server": {"host": "localhost", "port": "8008"}})
-if path.isfile("./settings.ini"): config.read("settings.ini")
+if path.isfile("./settings.ini"): config.read("./settings.ini")
 
 mode_map = {
     # default
