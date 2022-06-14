@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
 echo This script will automatically setup NGINX with LetsEncrypt SSL.
+
+if [[ `whoami` != root ]]; then
+    echo Permission escalation required. Please run this script as root or using sudo.
+    exit
+fi
+
 read -p "Please enter the domain name you wish to setup with the NGINX configuration: " dname
 read -p "Please specify what port to run the Qroxy service on (defaults to 8008): " port
+
 cd ~
 echo ---
 echo Installing common dependencies
@@ -42,7 +49,7 @@ else
 echo LetsEncrypt Autorenew cron added.
 fi
 echo ---
-echo Setting up Qroxy in /var/qroxy
+echo "Setting up Qroxy in /var/qroxy"
 echo ---
 mkdir /var/qroxy
 git clone https://github.com/techanon/qroxy.git /var/qroxy
@@ -55,7 +62,7 @@ port=$port
 EOF
 python3 -m pip install -U yt-dlp aiohttp
 echo ---
-echo You may now run the Qroxy service via 'python3 qroxy.py' and access it via https://$dname/.
-echo Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk
-echo It is recommended to use a tool like tmux to run the service without needing to be connected to the terminal.
-echo You can do so with this command: tmux new-session -d -s qroxy_service \; send-keys "python3 /var/qroxy/qroxy.py" Enter
+echo "You may now test out the Qroxy service via 'python3 qroxy.py' and access it via https://$dname/"
+echo "Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
+echo "It is recommended to use a tool like tmux to run the service without needing to be connected to the terminal"
+echo "You can do so with this command: bash /var/qroxy/tmux_reboot.sh"

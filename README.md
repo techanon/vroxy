@@ -1,22 +1,33 @@
 # Qroxy
 Self-hosted light-weight server proxy for YoutubeDL.
 
-Run with python3 and yt-dlp installed.
-
 Currently in alpha.
 
-Prep:
-- Setup a public facing server (optionally with an associated domain name)
-    It is _highly_ recommended to use a reverse proxy like NGINX to handle HTTPS frontloading of the server's public facing entry point and having that proxy the call to the _actual_ localhost endpoint
+Prerequisites:
+- Ensure you have a VPS or better with a debian based OS on it. You will need to be able to run commands with escalated privilege.
+- Ensure you have a domain name setup correctly with the desired DNS A entry pointing to your server's public IP address.
+
+Debian/Ubuntu Setup:
+- Pull the repo's install script and run it: `wget -O - https://raw.githubusercontent.com/techanon/qroxy/master/install_debian.sh | sudo bash`
+    - This will pull in all dependencies and setup the nginx reverse proxy and SSL certs for you.
+    - The program will be located at `/var/qroxy/` folder.
+    - If running on a raw debian install, you will either need to login as root `su -` or install sudo and add yourself as a sudo user.
+- Run the reboot script to start the service: `bash /var/qroxy/tmux_reboot.sh`
+
+Generic Setup:
+- Setup a public facing server on your VPS or whatever.
+    - This requires something like Apache or Nginx and some SSL cert assigned (using LetsEncrypt's certbot tool is the recommended option)
+    - Quest _requires_ HTTPS, so the SSL cert is a must.
 - Install python3 (make sure the `pip` tool is also installed)
-- Clone this repo to the server at your desired file path
-- `cd` into the that file path in your desired command line
+- Clone this repo to the server at your desired file path. `/var/qroxy` is recommended.
+- Navigate your terminal to the given folder that qroxy was cloned into.
 - Install the dependant packages for python via `python3 -m pip install -U yt-dlp aiohttp`
-- Rename example.ini to settings.ini and change the settings as you need
+- Copy example.ini to settings.ini and change the settings as you need
+- Run the server via `python3 /path/to/repo/qroxy.py`
+    - You may want to consider a terminal session manager (like tmux) to run the service without needing to be connected to the terminal.
 
 Usage:
-Run the server via `python3 /path/to/repo/qroxy.py`
-Then access the url via `https://mydomainorip/?url=https://youtube.com/watch?v=VIDEO_ID` to receive a 307 redirect to the direct link video url.
+Access the url via `https://mydomain/?url=https://youtube.com/watch?v=VIDEO_ID` to receive a 307 redirect to the direct link video url.
 
 Optional parameters:
 - `f`: Specific format id for the given url that is desired. This is something that is looked up ahead of time via manually checking --list-formats in ytdl.
