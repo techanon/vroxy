@@ -44,9 +44,13 @@ class Item:
         self.processing = False
 
     def extractExpiry(self):
+        # default to 10s for m3u8 links as they will force an improper starting time if the cache is used for too long
+        # allows 10s for handling a burst of users requesting the same URL (ie: someone just queued a new vid)
+        if ".m3u8" in self.resolved_url:
+            return time.time() + 10  
         p = expire_regex.search(self.resolved_url)
         if p is not None: return int(p.group(1))
-        return time.time() + 600  # default to 10 minutes
+        return time.time() + 600  # default to 10 minute
 
 expire_regex = re.compile(r"exp(?:ir(?:es?|ation))?=(\d+)")
 nextGCTime = time.time() + 3600
@@ -82,7 +86,7 @@ sort_opts = {
     # sort preferring highest quality without concern for codec or audio
     4: ["hasvid", "res"],
 }
-
+expiry_blacklist = ["vimeo.com"]
 
 @routes.view("/")
 class YTDLProxy(web.View):
