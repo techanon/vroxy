@@ -90,12 +90,12 @@ sort_opts = {
 @routes.view("/")
 class YTDLProxy(web.View):
     async def head(self):
-        if not self.request.query.get("url"):
+        if not self.request.query.get("url") and not self.request.query.get("u"):
             return web.Response(status=404)
         return await self.process()
 
     async def get(self):
-        if not self.request.query.get("url"):
+        if not self.request.query.get("url") and not self.request.query.get("u"):
             return web.Response(status=404, text="Missing Url Param")
         return await self.process()
 

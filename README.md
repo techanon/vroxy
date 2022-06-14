@@ -24,7 +24,7 @@ Generic Setup:
 - Install the dependant packages for python via `python3 -m pip install -U yt-dlp aiohttp`
 - Copy example.ini to settings.ini and change the settings as you need
 - Run the server via `python3 /path/to/repo/qroxy.py`
-    - You may want to consider a terminal session manager (like tmux) to run the service without needing to be connected to the terminal.
+    - You may want to consider a terminal multiplexer (like tmux) to run the service without needing to be connected to the terminal.
 
 Usage:
 Access the url via `https://mydomain/?url=https://youtube.com/watch?v=VIDEO_ID` to receive a 307 redirect to the direct link video url.
