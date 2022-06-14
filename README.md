@@ -4,7 +4,7 @@ Self-hosted light-weight server proxy for YoutubeDL.
 Currently in alpha.
 
 Prerequisites:
-- Ensure you have a VPS or better with a debian based OS on it. You will need to be able to run commands with escalated privilege.
+- Ensure you have a VPS or better linux OS on it (debian is recommended). You will need to be able to run commands with escalated privilege.
 - Ensure you have a domain name setup correctly with the desired DNS A entry pointing to your server's public IP address.
 
 Debian/Ubuntu Setup:
