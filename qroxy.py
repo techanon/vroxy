@@ -177,7 +177,7 @@ class YTDLProxy(web.View):
             # print(result.keys())
             item.resolve(result)
             pool.remove()
-            print(item.resolved_url)
+            print(f"[{rid}] {item.resolved_url}")
             print(f"[{rid}] {item.resolved_format} expires in {item.expiry - curTime} seconds", flush=True)
 
         item.lastAccess = curTime
