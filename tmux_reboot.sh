@@ -6,3 +6,4 @@ tmux kill-session -t qroxy
 git pull
 # start new
 tmux new-session -d -s qroxy \; send-keys "python3 /var/qroxy/qroxy.py" Enter
+echo "Qroxy service successfully started in a tmux session"
