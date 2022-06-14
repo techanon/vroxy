@@ -22,7 +22,6 @@ class PoolCount:
     def remove(self):
         self.count -= 1
 
-
 class Item:
     def __init__(self, url, sort):
         self.original_url = url
@@ -32,6 +31,7 @@ class Item:
         self.resolved_format = None
         self.sort = sort
         self.expiry = 0
+        self.lastAccess = 0
         self.processing = True
 
     def resolve(self, f):
@@ -48,21 +48,15 @@ class Item:
         if p is not None: return int(p.group(1))
         return time.time() + 600  # default to 10 minutes
 
-
 expire_regex = re.compile(r"exp(?:ir(?:es?|ation))?=(\d+)")
-
-
-def format_selector(format_list, item):
-    # print("", flush=True)
-
-    best = format_list[0]
-    print(best["url"])
-    return best
-
+nextGCTime = time.time() + 3600
+cache_map = {}
+pool_max = 10
+pool = PoolCount()
+routes = web.RouteTableDef()
 
 config = ConfigParser({"server": {"host": "localhost", "port": "8008"}})
-if path.isfile("./settings.ini"):
-    config.read("settings.ini")
+if path.isfile("./settings.ini"): config.read("settings.ini")
 
 mode_map = {
     # default
@@ -76,7 +70,6 @@ mode_map = {
     # hqvidbest
     "4": 4,
 }
-cache_map = {}
 sort_opts = {
     # decent sized media with audio+video, generally compatible with all platforms
     0: ["hasvid", "hasaud", "res:1440"],
@@ -89,12 +82,6 @@ sort_opts = {
     # sort preferring highest quality without concern for codec or audio
     4: ["hasvid", "res"],
 }
-
-pool_max = 10
-pool = PoolCount()
-
-
-routes = web.RouteTableDef()
 
 
 @routes.view("/")
@@ -115,6 +102,14 @@ class YTDLProxy(web.View):
         else: return web.Response(status=408)
 
     async def resolveUrl(self):
+        curTime = time.time()
+        # clean up the cache every hour
+        if curTime > nextGCTime:
+            nextGCTime = time.time() + 3600
+            for cache_id, cache_item in cache_map:
+                # if the item is expired or was last accessed over an hour ago, purge
+                if cache_item.lastAccess + 3600 < curTime or cache_item.expiry < curTime:
+                    del cache_map[cache_id]
 
         # silence the output of ytdl
         ytdl_opts = {"quiet": True}
@@ -144,7 +139,7 @@ class YTDLProxy(web.View):
         _id = f"{cacheId}~{url}"
         if _id in cache_map:
             item = cache_map[_id]
-            if item.expiry < time.time():
+            if item.expiry < curTime:
                 print("Cache expired")
                 del cache_map[_id]
             else:
@@ -156,16 +151,17 @@ class YTDLProxy(web.View):
                 print("Cache hit")
                 print(item.resolved_url)
                 print(
-                    f"{item.resolved_format} expires in {item.expiry - time.time()} seconds", flush=True
+                    f"{item.resolved_format} expires in {item.expiry - curTime} seconds", flush=True
                 )
+                item.lastAccess = curTime
                 return item.resolved_url or ""
 
         cache_map[_id] = item = Item(url, sort)
 
         # wait for an pool slot to open
-        timeout = time.time() + 30  # 30 seconds timelimit for waiting
+        timeout = curTime + 30  # 30 seconds timelimit for waiting
         while pool.count >= pool_max:
-            if time.time() > timeout: return None
+            if curTime > timeout: return None
             await sleep(1)
         print(ytdl_opts)
         with YoutubeDL(ytdl_opts) as ytdl:
@@ -177,9 +173,10 @@ class YTDLProxy(web.View):
             item.resolve(result)
             pool.remove()
             print(item.resolved_url)
-            print(f"{item.resolved_format} expires in {item.expiry - time.time()} seconds", flush=True)
+            print(f"{item.resolved_format} expires in {item.expiry - curTime} seconds", flush=True)
 
         print("")
+        item.lastAccess = curTime
         return item.resolved_url or ""
 
 
