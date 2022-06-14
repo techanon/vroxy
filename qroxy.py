@@ -169,7 +169,6 @@ class YTDLProxy(web.View):
         while pool.count >= pool_max:
             if curTime > timeout: return None
             await sleep(1)
-        print(ytdl_opts)
         with YoutubeDL(ytdl_opts) as ytdl:
             print(f"[{rid}] Resolving '{cacheId}' for url: {url}")
             print(f"[{rid}] Fetching fresh info", flush=True)
