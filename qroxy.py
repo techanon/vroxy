@@ -34,7 +34,7 @@ class Item:
         self.lastAccess = 0
         self.processing = True
 
-    def resolve(self, f):
+    def resolve(self, f) -> None:
         if self.sort:
             f = f["formats"][-1]
         self.resolved_url = f["url"]
@@ -43,7 +43,7 @@ class Item:
         self.expiry = self.extractExpiry()
         self.processing = False
 
-    def extractExpiry(self):
+    def extractExpiry(self) -> float:
         # default to 10s for m3u8 links as they will force an improper starting time if the cache is used for too long
         # allows 10s for handling a burst of users requesting the same URL (ie: someone just queued a new vid)
         if ".m3u8" in self.resolved_url:
@@ -86,7 +86,6 @@ sort_opts = {
     # sort preferring highest quality without concern for codec or audio
     4: ["hasvid", "res"],
 }
-expiry_blacklist = ["vimeo.com"]
 
 @routes.view("/")
 class YTDLProxy(web.View):
@@ -119,7 +118,7 @@ class YTDLProxy(web.View):
         # silence the output of ytdl
         ytdl_opts = {"quiet": True}
 
-        url = normalizeUrl(self.request.query.get("url"))
+        url = normalizeUrl(self.request.query.get("url") or self.request.query.get("u"))
         mode = mode_map[self.request.query.get("m") or "0"]
         fid = self.request.query.get("f")
         host = urlparse(url).hostname

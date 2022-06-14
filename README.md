@@ -27,3 +27,6 @@ Optional parameters:
     - `2` - aka "hasvid,hasaud,+res" for sort preferring audio+video with the lowest quality
     - `3` - aka "hasvid,res,codec:vp9" for sort preferring highest quality with priority on VP9 codec for platform compatibility
     - `4` - aka "hasvid,res" for sort preferring highest quality without concern for codec or audio
+
+
+TODO: Add discord embed support ala https://github.com/robinuniverse/TwitFix/blob/main/templates/index.html because why not?
