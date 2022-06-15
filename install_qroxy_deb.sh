@@ -8,8 +8,17 @@ if [[ `whoami` != root ]]; then
 fi
 
 echo '>>> Some information is needed from you <<<'
+read -p "Please select the folder to install Qroxy into (default is /var/qroxy): " floc
 read -p "Please enter the domain name you wish to setup with the NGINX configuration: " dname
 read -p "Please specify what port to run the Qroxy service on (defaults to 8008): " port
+if [ ! $floc ]; then
+    floc='/var/qroxy'
+fi
+if [ ! $port ]; then
+    port=8008
+fi
+
+echo "Domain: $dname | Reverse Proxy Port: $port | Qroxy Location: $floc"
 
 cd ~
 echo ---
@@ -24,10 +33,6 @@ apt install -y python3.9 python3-pip python3-certbot-nginx
 echo ---
 echo Configuring NGINX with LetsEncrypt SSL Certs
 echo ---
-if [ ! $port ]; then
-    port=8008
-fi
-echo Port is $port
 cat << EOF > /etc/nginx/conf.d/$dname.conf
 server {
     server_name $dname;
@@ -41,11 +46,9 @@ nginx -t && nginx -s reload
 
 echo ---
 echo Setting up LetsEncrypt
-echo You will need to enter your email and accept the TOS.
-echo 'You can answer no to the third question if you want.'
 echo ---
 
-certbot --nginx -d $dname
+certbot -n --nginx --no-eff-email --agree-tos --register-unsafely-without-email -d $dname
 if crontab -l | grep -Fxq '0 12 * * * /usr/bin/certbot renew --quiet'; then
     echo LetsEncrypt Autorenew cron found. Skipping.
 else
@@ -56,17 +59,18 @@ else
     echo LetsEncrypt Autorenew cron added.
 fi
 echo ---
-echo "Setting up Qroxy in /var/qroxy"
+echo "Setting up Qroxy in $floc"
 echo ---
-mkdir /var/qroxy
-if [ ! -d /var/qroxy/.git ]; then
-    git clone https://github.com/techanon/qroxy.git /var/qroxy
+mkdir $floc
+if [[ ! -d "$floc/.git" ]]; then
+    git clone https://github.com/techanon/qroxy.git $floc
     git config pull.ff only
+    git config --global --add safe.directory $floc
 else
     # if it already exists, just grab the latest instead
     git pull
 fi
-cd /var/qroxy
+cd $floc
 cat << EOF > settings.ini
 [server]
 host=localhost
@@ -75,7 +79,7 @@ EOF
 python3 -m pip install -U yt-dlp aiohttp
 chown -R $SUDO_USER .
 echo ---
-echo "You may now test out the Qroxy service via 'cd /var/qroxy && python3 qroxy.py' and access it via https://$dname/"
+echo "You may now test out the Qroxy service via 'cd $floc && python3 qroxy.py' and access it via https://$dname/"
 echo "Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
 echo "It is recommended to use a tool like tmux to run the service without needing to be connected to the terminal"
-echo "You can do so with this command: bash /var/qroxy/tmux_reboot.sh"
+echo "You can do so with this command: bash $floc/tmux_reboot.sh"
