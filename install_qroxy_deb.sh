@@ -52,7 +52,7 @@ echo ---
 echo Setting up LetsEncrypt
 echo ---
 
-certbot -n --nginx --no-eff-email --agree-tos --register-unsafely-without-email -d $dname
+certbot -n --nginx --redirect --no-eff-email --agree-tos --register-unsafely-without-email -d $dname
 if crontab -l | grep -Fxq '0 12 * * * /usr/bin/certbot renew --quiet'; then
     echo LetsEncrypt Autorenew cron found. Skipping.
 else
