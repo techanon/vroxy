@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 cd /var/qroxy
 echo "Stopping Qroxy service"
 tmux kill-session -t qroxy

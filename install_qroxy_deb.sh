@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 echo This script will automatically setup all dependencies and an NGINX server with a LetsEncrypt SSL cert.
 
@@ -82,7 +82,7 @@ port=$port
 EOF
 python3 -m pip install -U yt-dlp aiohttp
 chown -R $SUDO_USER .
-./reload.sh
+bash $floc/reload.sh
 echo ---
 echo "Qroxy service is now running on https://$dname/ from $floc"
 echo "Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
