@@ -22,9 +22,9 @@ add-apt-repository ppa:deadsnakes/ppa
 apt install -y python3.9 python3-pip python3-certbot-nginx
 echo ---
 echo Configuring NGINX with LetsEncrypt SSL Certs
-echo --
+echo ---
 if [ -n $port ]; then
-port=8008 
+    port=8008 
 fi
 echo Port is $port
 cat << EOF > /etc/nginx/conf.d/$dname.conf
@@ -37,23 +37,34 @@ server {
 EOF
 echo NGINX Configuration stored in /etc/nginx/conf.d/$dname.conf
 nginx -t && nginx -s reload
-echo >> Setting up LetsEncrypt. You will need to enter any requested information and accept the TOS.
+
+echo ---
+echo Setting up LetsEncrypt
+echo You will need to enter your email and accept the TOS.
+echo 'You can answer no to the third question if you want.'
+echo ---
+
 certbot --nginx -d $dname
 if crontab -l | grep -Fxq '0 12 * * * /usr/bin/certbot renew --quiet'; then
-echo LetsEncrypt Autorenew cron found. Skipping.
+    echo LetsEncrypt Autorenew cron found. Skipping.
 else
-(crontab -l ; echo '
-# Lets Encrypt SSL Autorenew
-0 12 * * * /usr/bin/certbot renew --quiet
-') | crontab -
-echo LetsEncrypt Autorenew cron added.
+    (crontab -l ; echo '
+    # Lets Encrypt SSL Autorenew
+    0 12 * * * /usr/bin/certbot renew --quiet
+    ') | crontab -
+    echo LetsEncrypt Autorenew cron added.
 fi
 echo ---
 echo "Setting up Qroxy in /var/qroxy"
 echo ---
 mkdir /var/qroxy
-git clone https://github.com/techanon/qroxy.git /var/qroxy
-git config pull.ff only
+if [ ! -d /var/qroxy/.git ]; then
+    git clone https://github.com/techanon/qroxy.git /var/qroxy
+    git config pull.ff only
+else
+    # if it already exists, just grab the latest instead
+    git pull
+fi
 cd /var/qroxy
 cat << EOF > settings.ini
 [server]
@@ -61,6 +72,7 @@ host=localhost
 port=$port
 EOF
 python3 -m pip install -U yt-dlp aiohttp
+chown -R $SUDO_USER .
 echo ---
 echo "You may now test out the Qroxy service via 'python3 qroxy.py' and access it via https://$dname/"
 echo "Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
