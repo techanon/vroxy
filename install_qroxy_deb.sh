@@ -66,6 +66,7 @@ echo ---
 echo "Setting up Qroxy in $floc"
 echo ---
 mkdir $floc
+cd $floc
 if [[ ! -d "$floc/.git" ]]; then
     git clone https://github.com/techanon/qroxy.git $floc
     git config pull.ff only
@@ -74,15 +75,19 @@ else
     # if it already exists, just grab the latest instead
     git pull
 fi
-cd $floc
 cat << EOF > settings.ini
 [server]
 host=localhost
 port=$port
 EOF
 python3 -m pip install -U yt-dlp aiohttp
-chown -R $SUDO_USER .
-su $SUDO_USER -c "bash $floc/reload.sh"
+if [ ! $SUDO_USER ]; then
+    # is actually just root user, no sudo being used
+    bash $floc/reload.sh
+else
+    chown -R $SUDO_USER ./
+    su $SUDO_USER -c "bash $floc/reload.sh"
+fi
 echo ---
 echo "Qroxy service is now running on https://$dname/ from $floc"
 echo "Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
