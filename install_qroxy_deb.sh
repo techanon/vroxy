@@ -7,6 +7,7 @@ if [[ `whoami` != root ]]; then
     exit
 fi
 
+echo '>>> Some information is needed from you <<<'
 read -p "Please enter the domain name you wish to setup with the NGINX configuration: " dname
 read -p "Please specify what port to run the Qroxy service on (defaults to 8008): " port
 
@@ -18,7 +19,7 @@ apt install -y git software-properties-common tmux gpg gpg-agent dirmngr nginx c
 echo ---
 echo Installing python dependencies
 echo ---
-add-apt-repository ppa:deadsnakes/ppa
+add-apt-repository -y ppa:deadsnakes/ppa
 apt install -y python3.9 python3-pip python3-certbot-nginx
 echo ---
 echo Configuring NGINX with LetsEncrypt SSL Certs
@@ -74,7 +75,7 @@ EOF
 python3 -m pip install -U yt-dlp aiohttp
 chown -R $SUDO_USER .
 echo ---
-echo "You may now test out the Qroxy service via 'python3 qroxy.py' and access it via https://$dname/"
+echo "You may now test out the Qroxy service via 'cd /var/qroxy && python3 qroxy.py' and access it via https://$dname/"
 echo "Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
 echo "It is recommended to use a tool like tmux to run the service without needing to be connected to the terminal"
 echo "You can do so with this command: bash /var/qroxy/tmux_reboot.sh"
