@@ -83,7 +83,7 @@ EOF
 python3 -m pip install -U yt-dlp aiohttp
 chown -R $SUDO_USER .
 su $SUDO_USER
-bash $floc/reload.sh
+. $floc/reload.sh
 echo ---
 echo "Qroxy service is now running on https://$dname/ from $floc"
 echo "Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
