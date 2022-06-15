@@ -82,6 +82,7 @@ port=$port
 EOF
 python3 -m pip install -U yt-dlp aiohttp
 chown -R $SUDO_USER .
+su $SUDO_USER
 bash $floc/reload.sh
 echo ---
 echo "Qroxy service is now running on https://$dname/ from $floc"
