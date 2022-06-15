@@ -112,7 +112,7 @@ class YTDLProxy(web.View):
         # clean up the cache every hour
         if curTime > nextGCTime:
             nextGCTime = time.time() + 3600
-            for cache_id, cache_item in cache_map:
+            for cache_id, cache_item in cache_map.items():
                 # if the item is expired or was last accessed over an hour ago, purge
                 if cache_item.lastAccess + 3600 < curTime or cache_item.expiry < curTime:
                     del cache_map[cache_id]
