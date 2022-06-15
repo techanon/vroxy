@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo This script will automatically setup NGINX with LetsEncrypt SSL.
+echo This script will automatically setup all dependencies and an NGINX server with a LetsEncrypt SSL cert.
 
 if [[ `whoami` != root ]]; then
     echo Permission escalation required. Please run this script as root or using sudo.
@@ -16,6 +16,10 @@ if [ ! $floc ]; then
 fi
 if [ ! $port ]; then
     port=8008
+fi
+if [ ! $dname ]; then
+    echo "No domain name provided. This is required information. Rerun script and specify the domain name."
+    exit 1
 fi
 
 echo "Domain: $dname | Reverse Proxy Port: $port | Qroxy Location: $floc"
@@ -78,8 +82,11 @@ port=$port
 EOF
 python3 -m pip install -U yt-dlp aiohttp
 chown -R $SUDO_USER .
+./reload.sh
 echo ---
-echo "You may now test out the Qroxy service via 'cd $floc && python3 qroxy.py' and access it via https://$dname/"
+echo "Qroxy service is now running on https://$dname/ from $floc"
 echo "Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
-echo "It is recommended to use a tool like tmux to run the service without needing to be connected to the terminal"
-echo "You can do so with this command: bash $floc/tmux_reboot.sh"
+echo "If you need to restart or update the service, run this command: bash $floc/reload.sh"
+echo "You can view the Qroxy logs via 'tmux a -t qroxy'."
+echo "In the tmux session you can cleanly exit via CTRL+B and the clicking the D key."
+echo ---
