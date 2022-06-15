@@ -8,7 +8,8 @@ Prerequisites:
 - Ensure you have a domain name setup correctly with the desired DNS A entry pointing to your server's public IP address.
 
 Debian/Ubuntu Setup:
-- Pull the repo's install script and run it: `wget -O - https://raw.githubusercontent.com/techanon/qroxy/master/install_debian.sh | sudo bash`
+- Pull the repo's install script and run it:  
+    `wget -q https://raw.githubusercontent.com/techanon/qroxy/master/install_debian.sh && sudo bash ./install_qroxy_deb.sh`
     - This will pull in all dependencies and setup the nginx reverse proxy and SSL certs for you.
     - The program will be located at `/var/qroxy/` folder.
     - If running on a raw debian install, you will either need to login as root `su -` or install sudo and add yourself as a sudo user.
