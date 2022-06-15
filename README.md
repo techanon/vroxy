@@ -9,13 +9,12 @@ Prerequisites:
 
 Debian/Ubuntu Setup:
 - Pull the repo's install script and run it:  
-    `wget -q https://raw.githubusercontent.com/techanon/qroxy/master/install_qroxy_deb.sh -O install_qroxy.sh && sudo bash ./install_qroxy.sh`
+    - `wget -q https://raw.githubusercontent.com/techanon/qroxy/master/install_qroxy_deb.sh -O install_qroxy.sh && sudo bash ./install_qroxy.sh`
     - This will pull in all dependencies and setup the nginx reverse proxy and SSL certs for you.
-    - The program will be located at `/var/qroxy/` folder.
-    - If running on a raw debian install, you will either need to login as root `su -` or install sudo and add yourself as a sudo user.
-- Run the reboot script to start the service: `bash /var/qroxy/tmux_reboot.sh`
-- This reboot script will also implicitly check for the latest updates to the Qroxy repo.
-- You can examine the service log with: `tmux attach-session -t qroxy`
+    - The script will use `/var/qroxy` as the install folder by default, but you can specify another location if you wish.
+    - If running on an OS without the sudo command, you will either need to login as root `su -` or install sudo and add yourself as a sudo user.
+- Run the reload script to update and (re)start the service: `bash /var/qroxy/reload.sh`
+- You can examine the service log with: `tmux a -t qroxy`
 - Exit tmux with `CTRL+B` followed by the `D` key.
 
 Generic Setup:
