@@ -24,8 +24,8 @@ apt install -y python3.9 python3-pip python3-certbot-nginx
 echo ---
 echo Configuring NGINX with LetsEncrypt SSL Certs
 echo ---
-if [ -n $port ]; then
-    port=8008 
+if [ ! $port ]; then
+    port=8008
 fi
 echo Port is $port
 cat << EOF > /etc/nginx/conf.d/$dname.conf
