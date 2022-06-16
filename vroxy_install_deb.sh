@@ -56,11 +56,12 @@ certbot -n --nginx --redirect --no-eff-email --agree-tos --register-unsafely-wit
 if crontab -l | grep -Fxq '0 12 * * * /usr/bin/certbot renew --quiet'; then
     echo LetsEncrypt Autorenew cron found. Skipping.
 else
-    (crontab -l ; echo '
+    (crontab -l ; echo "
     # Lets Encrypt SSL Autorenew
     0 12 * * * /usr/bin/certbot renew --quiet
-    ') | crontab -
-    echo LetsEncrypt Autorenew cron added.
+    0 3 * * * bash $floc/reload.sh
+    ") | crontab -
+    echo LetsEncrypt Autorenew and Vroxy service auto-reload crons added.
 fi
 echo ---
 echo "Setting up Vroxy in $floc"

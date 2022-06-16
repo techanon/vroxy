@@ -47,8 +47,8 @@ class Item:
     def extractExpiry(self) -> float:
         # default to 10s for m3u8 links as they will force an improper starting time if the cache is used for too long
         # allows 10s for handling a burst of users requesting the same URL (ie: someone just queued a new vid)
-        if ".m3u8" in self.resolved_url:
-            return time.time() + 10  
+        # if ".m3u8" in self.resolved_url:
+        #     return time.time() + 10  
         p = expire_regex.search(self.resolved_url)
         if p is not None: return int(p.group(1))
         return time.time() + 600  # default to 10 minute
