@@ -96,6 +96,10 @@ echo ---
 echo "Setting up Vroxy in $dir"
 echo ---
 mkdir $dir
+if [ ! $(git config --global --get-all safe.directory | grep "$dir")]; then
+    # ensure that git knows that this new directory is safe
+    git config --global --add safe.directory $dir
+fi
 if [ $SUDO_USER ]; then
     # enforce calling user has ownership of the directory and files
     chown -R $SUDO_USER $dir
@@ -104,7 +108,6 @@ cd $dir
 if [[ ! -d "$dir/.git" ]]; then
     git clone https://github.com/techanon/vroxy.git $dir
     git config pull.ff only
-    git config --global --add safe.directory $dir
 else
     # if it already exists, just grab the latest instead
     git pull
