@@ -7,7 +7,11 @@ if [[ `whoami` != root ]]; then
     exit
 fi
 
-echo '>>> Some information is needed from you <<<'
+echo '
+
+>>> Some information is needed from you <<<
+
+'
 read -p "Please select the folder for Vroxy to install into or update in (leave empty for /var/vroxy): " dir
 
 if [ ! $dir ]; then dir='/var/vroxy'; fi
