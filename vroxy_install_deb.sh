@@ -66,6 +66,9 @@ echo ---
 echo "Setting up Vroxy in $floc"
 echo ---
 mkdir $floc
+if [ $SUDO_USER ]; then
+    chown -R $SUDO_USER $floc
+fi
 cd $floc
 if [[ ! -d "$floc/.git" ]]; then
     git clone https://github.com/techanon/vroxy.git $floc
@@ -85,7 +88,6 @@ if [ ! $SUDO_USER ]; then
     # is actually just root user, no sudo being used
     bash $floc/reload.sh
 else
-    chown -R $SUDO_USER ./
     su $SUDO_USER -c "bash $floc/reload.sh"
 fi
 echo ---
