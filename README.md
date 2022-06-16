@@ -9,11 +9,11 @@ Prerequisites:
 
 Debian/Ubuntu Setup:
 - Pull the repo's install script and run it:  
-    - `wget -q https://raw.githubusercontent.com/techanon/vroxy/master/vroxy_install_deb.sh -O install_vroxy.sh && sudo bash ./install_vroxy.sh`
+    - `wget -q https://raw.githubusercontent.com/techanon/vroxy/master/vroxy_install_deb.sh -O vroxy_install.sh && sudo bash ./vroxy_install.sh`
     - This will pull in all dependencies and setup the nginx reverse proxy and SSL certs for you.
     - The script will use `/var/vroxy` as the install folder by default, but you can specify another location if you wish.
     - If running on an OS without the sudo command, you will either need to login as root `su -` or install sudo and add yourself as a sudo user.
-- Run the reload script to update and (re)start the service: `bash /var/vroxy/reload.sh`
+- Run the reload script to update and (re)start the service: `bash /var/vroxy/vroxy_reload.sh`
 - You can examine the service log with: `tmux a -t vroxy`
 - Exit tmux with `CTRL+B` followed by the `D` key.
 
