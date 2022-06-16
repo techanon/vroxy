@@ -22,19 +22,19 @@ fi
 
 if [ ! $defaultport ]; then defaultport=8420; fi
 domainmsg='required'
-if [ $defaultdomain ]; then domainmsg="leave empty for $defaltdomain"; fi
+if [ $defaultdomain ]; then domainmsg="leave empty for $defaultdomain"; fi
 
 
 read -p "Please enter the domain name you wish to setup with the NGINX configuration ($domainmsg): " domain
 read -p "Please specify what port to run the Vroxy service on (leave empty for $defaultport): " port
 
-if [ ! $port ]; then port=defaultport; fi
+if [ ! $port ]; then port=$defaultport; fi
 if [ ! $domain ]; then
     if [ ! $defaultdomain ]; then
         echo "No domain name provided. This is required information for initial setup. Rerun script and specify the domain name."
         exit 1
     else
-        domain=defaultdomain
+        domain=$defaultdomain
     fi
 fi
 
