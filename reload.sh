@@ -1,5 +1,6 @@
 #!/bin/bash
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+cd "$(dirname "${BASH_SOURCE[0]}")"
+SCRIPT_DIR=$(pwd)
 echo "Stopping Vroxy service"
 tmux kill-session -t vroxy
 echo "Checking for latest Vroxy updates"
