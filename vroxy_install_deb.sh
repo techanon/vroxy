@@ -8,7 +8,7 @@ if [[ `whoami` != root ]]; then
 fi
 
 echo '>>> Some information is needed from you <<<'
-read -p "Please select the folder for Vroxy to install into or update in (default is /var/vroxy): " dir
+read -p "Please select the folder for Vroxy to install into or update in (leave empty for /var/vroxy): " dir
 
 if [ ! $dir ]; then dir='/var/vroxy'; fi
 if [[ -f "$dir/settings.ini" ]]; then
@@ -69,15 +69,28 @@ echo Setting up LetsEncrypt
 echo ---
 
 certbot -n --nginx --redirect --no-eff-email --agree-tos --register-unsafely-without-email -d $domain
-if crontab -l | grep -Fxq '0 12 * * * /usr/bin/certbot renew --quiet'; then
+croninfo=$(crontab -l)
+if echo $croninfo | grep -Fxq '0 12 * * * /usr/bin/certbot renew --quiet'; then
     echo LetsEncrypt Autorenew cron found. Skipping.
 else
-    (crontab -l ; echo "
+    croninfo="$croninfo
     # Lets Encrypt SSL Autorenew
     0 12 * * * /usr/bin/certbot renew --quiet
-    0 3 * * * bash $dir/reload.sh
-    ") | crontab -
-    echo LetsEncrypt Autorenew and Vroxy service auto-reload crons added.
+    "
+    echo $croninfo | crontab -
+    echo LetsEncrypt Autorenew cron added.
+fi
+if echo $croninfo | grep -xq "vroxy_reload.sh"; then
+    # replace any old directory service cron with the new directory service cron
+    croninfo=$(echo $croninfo | sed -r "s|bash .+/vroxy_reload\.sh|bash $dir/vroxy_reload.sh|g")
+    echo $croninfo | crontab -
+    echo Vroxy service auto-reload cron updated.
+else
+    echo "$croninfo
+    # Vroxy service auto-reload
+    0 3 * * * bash $dir/vroxy_reload.sh
+    " | crontab -
+    echo Vroxy service auto-reload cron added.
 fi
 echo ---
 echo "Setting up Vroxy in $dir"
@@ -106,15 +119,15 @@ python3 -m pip install -U yt-dlp aiohttp
 if [ $SUDO_USER ]; then
     # re-enforce calling user has ownership of the directory and files
     chown -R $SUDO_USER $dir
-    su $SUDO_USER -c "bash $dir/reload.sh"
+    su $SUDO_USER -c "bash $dir/vroxy_reload.sh"
 else
     # is actually just root user, no sudo being used, all good
-    bash $dir/reload.sh
+    bash $dir/vroxy_reload.sh
 fi
 echo ---
 echo "Vroxy service is now running on https://$domain/ from $dir"
 echo "Try it out with this sample URL: https://$domain/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
-echo "If you need to restart or update the service, run this command: bash $dir/reload.sh"
+echo "If you need to restart or update the service, run this command: bash $dir/vroxy_reload.sh"
 echo "You can view the Vroxy logs via 'tmux a -t vroxy'."
 echo "In the tmux session you can cleanly exit via CTRL+B and the clicking the D key."
 echo ---
