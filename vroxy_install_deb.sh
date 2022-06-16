@@ -18,9 +18,9 @@ fi
 
 if [ ! $defaultport ]; then defaultport=8420; fi
 if [ $defaultdomain ]; then
-    domainmsg = "(leave empty for $defaltdomain)"
+    domainmsg="(leave empty for $defaltdomain)"
 else
-    domainmsg = "(required)"
+    domainmsg="(required)"
 fi
 
 
