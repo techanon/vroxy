@@ -67,6 +67,7 @@ echo "Setting up Vroxy in $floc"
 echo ---
 mkdir $floc
 if [ $SUDO_USER ]; then
+    # make sure the folder is owned by the actual user calling this script
     chown -R $SUDO_USER $floc
 fi
 cd $floc
