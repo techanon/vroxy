@@ -8,11 +8,11 @@ if [[ `whoami` != root ]]; then
 fi
 
 echo '>>> Some information is needed from you <<<'
-read -p "Please select the folder to install Qroxy into (default is /var/qroxy): " floc
+read -p "Please select the folder to install Vroxy into (default is /var/vroxy): " floc
 read -p "Please enter the domain name you wish to setup with the NGINX configuration: " dname
-read -p "Please specify what port to run the Qroxy service on (defaults to 8008): " port
+read -p "Please specify what port to run the Vroxy service on (defaults to 8008): " port
 if [ ! $floc ]; then
-    floc='/var/qroxy'
+    floc='/var/vroxy'
 fi
 if [ ! $port ]; then
     port=8008
@@ -22,7 +22,7 @@ if [ ! $dname ]; then
     exit 1
 fi
 
-echo "Domain: $dname | Reverse Proxy Port: $port | Qroxy Location: $floc"
+echo "Domain: $dname | Reverse Proxy Port: $port | Vroxy Location: $floc"
 
 cd ~
 echo ---
@@ -63,12 +63,12 @@ else
     echo LetsEncrypt Autorenew cron added.
 fi
 echo ---
-echo "Setting up Qroxy in $floc"
+echo "Setting up Vroxy in $floc"
 echo ---
 mkdir $floc
 cd $floc
 if [[ ! -d "$floc/.git" ]]; then
-    git clone https://github.com/techanon/qroxy.git $floc
+    git clone https://github.com/techanon/vroxy.git $floc
     git config pull.ff only
     git config --global --add safe.directory $floc
 else
@@ -89,9 +89,9 @@ else
     su $SUDO_USER -c "bash $floc/reload.sh"
 fi
 echo ---
-echo "Qroxy service is now running on https://$dname/ from $floc"
+echo "Vroxy service is now running on https://$dname/ from $floc"
 echo "Try it out with this sample URL: https://$dname/?url=https://www.youtube.com/watch?v=wpV-gGA4PSk"
 echo "If you need to restart or update the service, run this command: bash $floc/reload.sh"
-echo "You can view the Qroxy logs via 'tmux a -t qroxy'."
+echo "You can view the Vroxy logs via 'tmux a -t vroxy'."
 echo "In the tmux session you can cleanly exit via CTRL+B and the clicking the D key."
 echo ---

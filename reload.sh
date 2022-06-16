@@ -1,9 +1,9 @@
 #!/bin/bash
-cd /var/qroxy
-echo "Stopping Qroxy service"
-tmux kill-session -t qroxy
-echo "Checking for latest Qroxy updates"
+cd /var/vroxy
+echo "Stopping Vroxy service"
+tmux kill-session -t vroxy
+echo "Checking for latest Vroxy updates"
 git pull
-echo "Starting Qroxy service"
-tmux new-session -d -s qroxy \; send-keys "python3 /var/qroxy/qroxy.py" Enter
-echo "Qroxy service successfully started in a tmux session"
+echo "Starting Vroxy service"
+tmux new-session -d -s vroxy \; send-keys "python3 /var/vroxy/vroxy.py" Enter
+echo "Vroxy service successfully started in a tmux session"

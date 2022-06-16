@@ -1,5 +1,5 @@
-# Qroxy
-Self-hosted light-weight server proxy for YoutubeDL.
+# Vroxy
+Self-hosted light-weight server proxy for YoutubeDL, originally designed for use in VRChat.
 
 Currently in alpha.
 
@@ -9,12 +9,12 @@ Prerequisites:
 
 Debian/Ubuntu Setup:
 - Pull the repo's install script and run it:  
-    - `wget -q https://raw.githubusercontent.com/techanon/qroxy/master/install_qroxy_deb.sh -O install_qroxy.sh && sudo bash ./install_qroxy.sh`
+    - `wget -q https://raw.githubusercontent.com/techanon/vroxy/master/vroxy_install_deb.sh -O install_vroxy.sh && sudo bash ./install_vroxy.sh`
     - This will pull in all dependencies and setup the nginx reverse proxy and SSL certs for you.
-    - The script will use `/var/qroxy` as the install folder by default, but you can specify another location if you wish.
+    - The script will use `/var/vroxy` as the install folder by default, but you can specify another location if you wish.
     - If running on an OS without the sudo command, you will either need to login as root `su -` or install sudo and add yourself as a sudo user.
-- Run the reload script to update and (re)start the service: `bash /var/qroxy/reload.sh`
-- You can examine the service log with: `tmux a -t qroxy`
+- Run the reload script to update and (re)start the service: `bash /var/vroxy/reload.sh`
+- You can examine the service log with: `tmux a -t vroxy`
 - Exit tmux with `CTRL+B` followed by the `D` key.
 
 Generic Setup:
@@ -22,11 +22,11 @@ Generic Setup:
     - This requires something like Apache or Nginx and some SSL cert assigned (using LetsEncrypt's certbot tool is the recommended option)
     - Quest _requires_ HTTPS, so the SSL cert is a must.
 - Install python3 (make sure the `pip` tool is also installed)
-- Clone this repo to the server at your desired file path. `/var/qroxy` is recommended.
-- Navigate your terminal to the given folder that qroxy was cloned into.
+- Clone this repo to the server at your desired file path. `/var/vroxy` is recommended.
+- Navigate your terminal to the given folder that Vroxy was cloned into.
 - Install the dependant packages for python via `python3 -m pip install -U yt-dlp aiohttp`
 - Copy example.ini to settings.ini and change the settings as you need
-- Run the server via `python3 /path/to/repo/qroxy.py`
+- Run the server via `python3 /path/to/repo/vroxy.py`
     - You may want to consider a terminal multiplexer (like tmux) to run the service without needing to be connected to the terminal.
 
 Usage:

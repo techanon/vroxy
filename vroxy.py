@@ -186,5 +186,5 @@ class YTDLProxy(web.View):
 
 app = web.Application()
 app.add_routes(routes)
-print("Starting Qroxy server.")
+print("Starting Vroxy server.")
 web.run_app(app, host=config["server"]["host"], port=config["server"]["port"])
