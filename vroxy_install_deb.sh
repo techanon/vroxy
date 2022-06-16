@@ -17,11 +17,8 @@ if [[ -f "$dir/settings.ini" ]]; then
 fi
 
 if [ ! $defaultport ]; then defaultport=8420; fi
-if [ $defaultdomain ]; then
-    domainmsg="(leave empty for $defaltdomain)"
-else
-    domainmsg="(required)"
-fi
+domainmsg='required'
+if [ $defaultdomain ]; then domainmsg="leave empty for $defaltdomain"; fi
 
 
 read -p "Please enter the domain name you wish to setup with the NGINX configuration ($domainmsg): " domain
