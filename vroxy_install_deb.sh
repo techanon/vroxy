@@ -46,7 +46,6 @@ echo Installing python dependencies
 echo ---
 add-apt-repository -y ppa:deadsnakes/ppa
 apt install -y python3.9 python3-pip python3-certbot-nginx
-if [ $domain ]; then
 echo ---
 echo Configuring NGINX with LetsEncrypt SSL Certs
 echo ---
