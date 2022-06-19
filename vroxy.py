@@ -47,8 +47,8 @@ class Item:
     def extractExpiry(self) -> float:
         # default to 10s for m3u8 links as they will force an improper starting time if the cache is used for too long
         # allows 10s for handling a burst of users requesting the same URL (ie: someone just queued a new vid)
-        if ".m3u8" in self.resolved_url:
-            return time.time() + 10  
+        # if ".m3u8" in self.resolved_url:
+        #     return time.time() + 10  
         p = expire_regex.search(self.resolved_url)
         if p is not None: return int(p.group(1))
         return time.time() + 600  # default to 10 minute
@@ -112,7 +112,7 @@ class YTDLProxy(web.View):
         # clean up the cache every hour
         if curTime > nextGCTime:
             nextGCTime = time.time() + 3600
-            for cache_id, cache_item in cache_map:
+            for cache_id, cache_item in cache_map.items():
                 # if the item is expired or was last accessed over an hour ago, purge
                 if cache_item.lastAccess + 3600 < curTime or cache_item.expiry < curTime:
                     del cache_map[cache_id]
@@ -186,5 +186,9 @@ class YTDLProxy(web.View):
 
 app = web.Application()
 app.add_routes(routes)
-print("Starting Qroxy server.")
+print("Starting Vroxy server.")
+print("--- TMUX USAGE REMINDER ---")
+print("If the service is running in a TMUX instance, you can exit without killing the service with CTRL+B and then press D")
+print("If you run the CTRL+C command, you will kill the service making your urls return 502.")
+print(f"Remember you can restart the service by exiting the TMUX instance with CTRL+B and then D, then run 'bash {path.dirname(__file__)}/vroxy_reload.sh'", flush=True)
 web.run_app(app, host=config["server"]["host"], port=config["server"]["port"])
