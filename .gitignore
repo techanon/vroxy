@@ -1,4 +1,5 @@
 .*
 !.git*
+!.dockerignore
 *pycache*
 settings.ini

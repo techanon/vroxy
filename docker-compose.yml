@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  vroxy:
+    build:
+      context: .
+      target: base
+    ports:
+      - "8008:8008"
+    volumes:
+      - .:/vroxy
+  dev:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/vroxy
+    profiles:
+      - donotstart
