@@ -66,7 +66,7 @@ config["server"] = {
     "host": os.getenv("VROXY_HOST", "localhost"),
     "port": os.getenv("VROXY_PORT", "8008"),
 }
-if path.isfile("./settings.ini"): config.read("./settings.ini")
+if path.isfile(path.join(path.dirname(__file__), "settings.ini")): config.read(path.join(path.dirname(__file__), "settings.ini"))
 
 mode_map = {
     # default
