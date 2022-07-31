@@ -44,3 +44,51 @@ Optional parameters:
 
 
 TODO: Add discord embed support ala https://github.com/robinuniverse/TwitFix/blob/main/templates/index.html because why not?
+
+## Docker deployment
+
+In general you can deploy `TODO: add official container` to any platform that supports running docker containers.
+
+### VPS
+
+On a bare VPS with [Docker][docker-install] and [docker-compose][docker-compose-install] installed:
+1. Clone the repo
+2. Copy example.ini to setup.ini and fill in the proper values
+3. ```sh
+   docker-compose up -d
+   ```
+
+## Docker development
+
+- Ensure you [have Docker installed][docker-install].
+- [Install docker-compose][docker-compose-install]
+- [Install make](https://command-not-found.com/make)
+
+Using make is optional if you already know how to use docker-compose.
+
+To build the docker containers:
+
+```sh
+make
+```
+
+Run the tests:
+
+```sh
+make test
+```
+
+To launch a shell inside the dev container:
+
+```sh
+make sh
+```
+
+To run the local development server:
+
+```
+docker-compose up
+```
+
+[docker-install]: https://docs.docker.com/engine/install/
+[docker-compose-install]: https://docs.docker.com/compose/install/
