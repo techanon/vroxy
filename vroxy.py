@@ -5,6 +5,7 @@ import time
 import re
 import random
 from os import path
+import os
 from urllib.parse import urlparse
 
 from aiohttp import web
@@ -60,7 +61,12 @@ pool_max = 10
 pool = PoolCount()
 routes = web.RouteTableDef()
 
-config = ConfigParser({"server": {"host": "localhost", "port": "8008"}})
+config = ConfigParser({
+    "server": {
+        "host": os.getenv("VROXY_HOST", "localhost"),
+        "port": os.getenv("VROXY_PORT", "8008"),
+    }
+})
 if path.isfile(path.join(path.dirname(__file__), "settings.ini")): config.read(path.join(path.dirname(__file__), "settings.ini"))
 
 mode_map = {
