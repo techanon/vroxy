@@ -47,7 +47,8 @@ TODO: Add discord embed support ala https://github.com/robinuniverse/TwitFix/blo
 
 ## Docker deployment
 
-In general you can deploy `TODO: add official container` to any platform that supports running docker containers.
+<!-- TODO: sub frizzle-chan container for official one -->
+In general you can deploy `ghcr.io/frizzle-chan/vroxy:dev` to any platform that supports running docker containers.
 
 ### VPS
 
