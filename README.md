@@ -59,6 +59,14 @@ On a bare VPS with [Docker][docker-install] and [docker-compose][docker-compose-
    docker-compose up -d
    ```
 
+### Google Cloud Platform: [Cloud Run](https://cloud.google.com/run)
+
+1. Push your docker container to [Google Cloud Registry](https://cloud.google.com/container-registry) or use the official one: <tbd>
+2. All the default settings should just work. But you might want to take care to look at the following settings:
+  - Set maximum replicas to 1
+  - Allow all traffic
+  - Allow unauthenticated invocations
+3. After a short initialization time, you should have a public service up and running
 ## Docker development
 
 - Ensure you [have Docker installed][docker-install].
