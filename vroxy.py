@@ -64,7 +64,7 @@ routes = web.RouteTableDef()
 config = ConfigParser()
 config["server"] = {
     "host": os.getenv("VROXY_HOST", "localhost"),
-    "port": os.getenv("VROXY_PORT", "8008"),
+    "port": os.getenv("PORT", "8008"),
 }
 if path.isfile(path.join(path.dirname(__file__), "settings.ini")): config.read(path.join(path.dirname(__file__), "settings.ini"))
 
