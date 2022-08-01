@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  vroxy:
+    image: vroxy
+    environment:
+      - VROXY_HOST=0.0.0.0
+      - PORT=8008
+    build:
+      context: .
+      target: base
+    ports:
+      - "8008:8008"
+    volumes:
+      - .:/vroxy
+  dev:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/vroxy
+    profiles:
+      - donotstart

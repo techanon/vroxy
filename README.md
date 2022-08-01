@@ -44,3 +44,61 @@ Optional parameters:
 
 
 TODO: Add discord embed support ala https://github.com/robinuniverse/TwitFix/blob/main/templates/index.html because why not?
+
+## Docker deployment
+
+<!-- TODO: sub frizzle-chan container for official one -->
+In general you can deploy `ghcr.io/frizzle-chan/vroxy:dev` to any platform that supports running docker containers.
+
+### VPS
+
+On a bare VPS with [Docker][docker-install] and [docker-compose][docker-compose-install] installed:
+1. Clone the repo
+2. Copy example.ini to setup.ini and fill in the proper values
+3. ```sh
+   docker-compose up -d
+   ```
+
+### Google Cloud Platform: [Cloud Run](https://cloud.google.com/run)
+
+1. Push your docker container to [Google Cloud Registry](https://cloud.google.com/container-registry) or use the official one: <tbd>
+2. All the default settings should just work. But you might want to take care to look at the following settings:
+  - Set maximum replicas to 1
+  - Allow all traffic
+  - Allow unauthenticated invocations
+3. After a short initialization time, you should have a public service up and running
+
+## Docker development
+
+- Ensure you [have Docker installed][docker-install].
+- [Install docker-compose][docker-compose-install]
+- [Install make](https://command-not-found.com/make)
+
+Using make is optional if you already know how to use docker-compose.
+
+To build the docker containers:
+
+```sh
+make
+```
+
+Run the tests:
+
+```sh
+make test
+```
+
+To launch a shell inside the dev container:
+
+```sh
+make sh
+```
+
+To run the local development server:
+
+```
+docker-compose up
+```
+
+[docker-install]: https://docs.docker.com/engine/install/
+[docker-compose-install]: https://docs.docker.com/compose/install/
