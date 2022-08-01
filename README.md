@@ -67,6 +67,7 @@ On a bare VPS with [Docker][docker-install] and [docker-compose][docker-compose-
   - Allow all traffic
   - Allow unauthenticated invocations
 3. After a short initialization time, you should have a public service up and running
+
 ## Docker development
 
 - Ensure you [have Docker installed][docker-install].
