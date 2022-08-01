@@ -4,7 +4,7 @@ services:
     image: vroxy
     environment:
       - VROXY_HOST=0.0.0.0
-      - VROXY_PORT=8008
+      - PORT=8008
     build:
       context: .
       target: base
