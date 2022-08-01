@@ -14,10 +14,10 @@ def normalizeUrl(url) -> str:
 def normalizeYT(url_parts) -> str:
     # remove the list query param as it causes excess delay in loading information
     url_query = parse_qs(url_parts.query)
-    new_query = {}
+    new_query = ""
     if "v" in url_query:
-        new_query["v"] = url_query["v"]
-    url_parts._replace(query=urlencode(new_query))
+        new_query = f"v={url_query['v'][0]}"
+    url_parts = url_parts._replace(query=new_query)
     return urlunparse(url_parts)
 
 
