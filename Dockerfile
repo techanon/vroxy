@@ -1,4 +1,4 @@
-FROM python:3.9.13 as base
+FROM python:3.10.5 as base
 
 WORKDIR /vroxy
 CMD ["python", "-u", "vroxy.py"]
