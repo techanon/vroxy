@@ -6,9 +6,12 @@ import re
 import random
 from os import path
 import os
+from typing import Optional
 from urllib.parse import urlparse
+from pathlib import Path
 
 from aiohttp import web
+from whitelist import DomainWhitelist, load_list
 from yt_dlp import YoutubeDL
 
 from normalize import normalizeUrl
@@ -65,8 +68,16 @@ config = ConfigParser()
 config["server"] = {
     "host": os.getenv("VROXY_HOST", "0.0.0.0"),
     "port": os.getenv("PORT", "8008"),
+    "whitelist": os.getenv("VROXY_WHITELIST", ""),
 }
 if path.isfile(path.join(path.dirname(__file__), "settings.ini")): config.read(path.join(path.dirname(__file__), "settings.ini"))
+
+domain_whitelist: Optional[DomainWhitelist] = None
+
+if wl_path := config["server"]["whitelist"]:
+    wl_path = Path(wl_path)
+    if wl_path.exists():
+        domain_whitelist = load_list(str(wl_path))
 
 mode_map = {
     # default
@@ -111,11 +122,21 @@ class YTDLProxy(web.View):
         return await self.process()
 
     async def process(self):
-        url = await self.resolveUrl()
-        if url: return web.Response(status=307, headers={"Location": url})
-        else: return web.Response(status=408)
+        userUrl = self.getUserUrl()
+        if domain_whitelist and not domain_whitelist.allows(userUrl):
+            return web.Response(status=403, text="Domain not in whitelist")
 
-    async def resolveUrl(self) -> str:
+        url = await self.resolveUrl(userUrl)
+
+        if not url:
+            return web.Response(status=408)
+
+        return web.Response(status=307, headers={"Location": url})
+
+    def getUserUrl(self) -> str:
+        return normalizeUrl(self.request.query.get("url") or self.request.query.get("u"))
+
+    async def resolveUrl(self, url: str) -> str:
         rid = random.getrandbits(16)
         global nextGCTime
         curTime = time.time()
@@ -133,7 +154,6 @@ class YTDLProxy(web.View):
         # silence the output of ytdl
         ytdl_opts = {"quiet": True}
 
-        url = normalizeUrl(self.request.query.get("url") or self.request.query.get("u"))
         mode = mode_map[self.request.query.get("m") or "0"]
         fid = self.request.query.get("f")
         host = urlparse(url).hostname

@@ -13,6 +13,6 @@ def test_url_resolve():
 
 def test_url_whitelist_deny():
     r = requests.get('http://vroxy_e2e:8008/?url=https%3A%2F%2Fwww.fakedomain.test%2Fwatch%3Fv%3DdQw4w9WgXcQ', allow_redirects=False)
-    assert r.status_code == 400
-    assert r.text == "no"
+    assert r.status_code == 403
+    assert r.text == "Domain not in whitelist"
 
