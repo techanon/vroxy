@@ -75,9 +75,7 @@ if path.isfile(path.join(path.dirname(__file__), "settings.ini")): config.read(p
 domain_whitelist: Optional[DomainWhitelist] = None
 
 if wl_path := config["server"]["whitelist"]:
-    wl_path = Path(wl_path)
-    if wl_path.exists():
-        domain_whitelist = load_list(str(wl_path))
+    domain_whitelist = load_list(wl_path)
 
 mode_map = {
     # default
