@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  vroxy:
+  vroxy: &vroxy
     image: vroxy
     environment:
       - VROXY_HOST=0.0.0.0
@@ -12,6 +12,18 @@ services:
       - "8008:8008"
     volumes:
       - .:/vroxy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8008/healthz"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+  vroxy_e2e:
+    <<: *vroxy
+    ports:
+      - "8088:8008"
+    profiles:
+      - donotstart
   dev:
     build:
       context: .

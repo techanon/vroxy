@@ -93,6 +93,11 @@ sort_opts = {
     4: ["hasvid", "res"],
 }
 
+@routes.view("/healthz")
+class Health(web.View):
+    async def get(self):
+        return web.Response(text="OK")
+
 @routes.view("/")
 class YTDLProxy(web.View):
     async def head(self):
