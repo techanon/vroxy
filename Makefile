@@ -1,7 +1,7 @@
-DEV=docker-compose run dev
+DEV=docker compose run --rm dev
 
 default: requirements.txt
-	docker-compose build vroxy dev
+	docker compose build vroxy dev
 
 requirements.txt: requirements.in
 	$(DEV) pip-compile $<
@@ -9,6 +9,10 @@ requirements.txt: requirements.in
 .PHONY: test
 test:
 	$(DEV) pytest
+
+.PHONY: test-e2e
+test-e2e:
+	./tests_e2e/run.sh
 
 .PHONY: sh
 sh:

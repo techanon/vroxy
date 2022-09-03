@@ -13,6 +13,9 @@ jobs:
       - name: build
         run: |
           make
-      - name: run tests
+      - name: run unit tests
         run: |
           make test
+      - name: run e2e tests
+        run: |
+          make test-e2e

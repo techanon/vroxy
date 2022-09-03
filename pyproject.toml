@@ -1,0 +1,4 @@
+# pyproject.toml
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--ignore=tests_e2e"
