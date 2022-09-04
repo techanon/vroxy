@@ -58,10 +58,10 @@ Name | Purpose | Default
 ### Whitelist file
 
 You may provide a whitelist file path via `VROXY_WHITELIST`. This is a text file where each line is a domain pattern to whitelist.
-Each line should be in the format: `[*.]domain.tld`. Specify wildcard subdomains with the `*.` prefix.
-For instance:
-- If you want to allow urls from `youtube.com`, specify `youtube.com`.
-- If you want to allow urls from both `youtube.com` and `www.youtube.com`, specify `*.youtube.com`.
+You may specify:
+- Fully qualified domains: `[subdomain.]domain.tld`
+- Wildcard subdomains: `*.domain.tld`
+- Use `#` to add comments.
 
 We include [an example config](/config/vrchat-whitelist.txt) which attempts to match the [VRChat Video Player Whitelist](https://docs.vrchat.com/docs/www-whitelist).
 
