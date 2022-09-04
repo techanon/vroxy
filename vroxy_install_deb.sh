@@ -57,7 +57,7 @@ cat << EOF > /etc/nginx/conf.d/$domain.conf
 server {
     server_name $domain;
     location / {
-        proxy_pass http://127.0.0.1:$port;
+        proxy_pass http://0.0.0.0:$port;
     }
     
     error_log /var/log/nginx/$domain.error.log;
