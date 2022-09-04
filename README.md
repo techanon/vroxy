@@ -106,6 +106,9 @@ Run the tests:
 ```sh
 make test
 ```
+```sh
+make test-e2e
+```
 
 To launch a shell inside the dev container:
 
