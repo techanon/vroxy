@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import List, NamedTuple, Set
 
 import tldextract
