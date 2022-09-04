@@ -8,9 +8,6 @@ def makeTokenAuthzMiddleware(tokens: List[str]):
 
     @middleware
     async def _tokenAuthzMiddleware(request, handler):
-        if len(tokens) == 0:
-            return await handler(request)
-            
         auth_token = ""
         # Authorization: Bearer <token>
         if auth_header := request.headers.get("Authorization"):
