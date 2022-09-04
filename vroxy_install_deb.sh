@@ -118,7 +118,7 @@ domain=$domain
 host=localhost
 port=$port
 EOF
-python3 -m pip install -U yt-dlp aiohttp
+python3 -m pip install -U yt-dlp aiohttp tldextract
 if [ $SUDO_USER ]; then
     # re-enforce calling user has ownership of the directory and files
     chown -R $SUDO_USER $dir
