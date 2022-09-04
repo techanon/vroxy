@@ -1,4 +1,4 @@
-from app.normalize import normalizeUrl
+from normalize import normalizeUrl
 
 def test_normalizeUrl():
     # identity
