@@ -42,6 +42,9 @@ Optional parameters:
     - `3` - aka "hasvid,res,codec:vp9" for sort preferring highest quality with priority on VP9 codec for platform compatibility
     - `4` - aka "hasvid,res" for sort preferring highest quality without concern for codec or audio
 
+If you specified authorization tokens in your configuration, use one of the following to authorize yourself:
+- Send an authorization header: `Authorization: Bearer <your token>`.
+- Use the `?token=<your token>` query parameter.
 
 TODO: Add discord embed support ala https://github.com/robinuniverse/TwitFix/blob/main/templates/index.html because why not?
 
@@ -54,6 +57,7 @@ Name | Purpose | Default
 `VROXY_HOST` | The host the server should bind to. | `0.0.0.0`
 `PORT` | Port the server should bind to. | `8008`
 `VROXY_WHITELIST` | Path to a whitelist file | No whitelist
+`VROXY_AUTH_TOKENS` | comma separated list of bearer tokens. Enables authorization. | Unauthorized access allowed
 
 ### Whitelist file
 

@@ -15,14 +15,29 @@ services:
       - .:/vroxy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8008/healthz"]
-      interval: 10s
+      interval: 5s
       timeout: 10s
-      retries: 5
+      retries: 3
       start_period: 5s
   vroxy_e2e:
     <<: *vroxy
-    ports:
-      - "8088:8008"
+    ports: []
+    profiles:
+      - donotstart
+  vroxy_e2e_authz:
+    <<: *vroxy
+    ports: []
+    healthcheck:
+      test: ["CMD", "curl", "-f", "--header", "Authorization: Bearer abc", "http://localhost:8008/healthz"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    environment:
+      - VROXY_HOST=0.0.0.0
+      - PORT=8008
+      - VROXY_WHITELIST=/vroxy/config/vrchat-whitelist.txt
+      - VROXY_AUTH_TOKENS=abc,123
     profiles:
       - donotstart
   dev:
