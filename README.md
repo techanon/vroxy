@@ -42,7 +42,7 @@ Optional parameters:
     - `3` - aka "hasvid,res,codec:vp9" for sort preferring highest quality with priority on VP9 codec for platform compatibility
     - `4` - aka "hasvid,res" for sort preferring highest quality without concern for codec or audio
 
-If you specified authorization tokens in your configuration:
+If you specified authorization tokens in your configuration, use one of the following to authorize yourself:
 - Send an authorization header: `Authorization: Bearer <your token>`.
 - Use the `?token=<your token>` query parameter.
 
