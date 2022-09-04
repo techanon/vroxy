@@ -1,0 +1,9 @@
+# I'm a comment
+domain1.com
+
+# I'm a second comment
+domain2.com # I'm an inline comment
+ # I'm a comment with a lil whitespace
+sub.domain3.com
+*.domain4.com
+domain5.com#Let this be a comment
