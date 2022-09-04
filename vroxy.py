@@ -15,7 +15,7 @@ log.basicConfig(level=log.DEBUG)
 @routes.view("/healthz")
 class Health(web.View):
     async def get(self):
-        return web.Response(text="OK")
+        return web.Response(status=200, text="OK")
 
 @routes.view("/")
 class YTDLProxy(web.View):
