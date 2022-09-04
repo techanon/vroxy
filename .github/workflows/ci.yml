@@ -16,6 +16,11 @@ jobs:
       - name: run unit tests
         run: |
           make test
+      - name: upload code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: htmlcov/
       - name: run e2e tests
         run: |
           make test-e2e
