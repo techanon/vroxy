@@ -1,16 +1,15 @@
 from __future__ import unicode_literals
 import os
-
-import logging
+import logging as log
 from aiohttp import web
 
-from app.config import getConfig
+from app.config import config
 from app.resolver import resolveUrl
 from app.exceptions import *
 
 routes = web.RouteTableDef()
-logging.basicConfig(level=logging.DEBUG)
-config = getConfig()
+log.basicConfig(level=log.DEBUG)
+
 
 @routes.view("/healthz")
 class Health(web.View):
@@ -20,16 +19,16 @@ class Health(web.View):
 @routes.view("/")
 class YTDLProxy(web.View):
     async def head(self):
-        print('HEAD headers')
-        print(self.request.headers)
+        log.debug('HEAD headers')
+        log.debug(self.request.headers)
         if not self.request.query.get("url") and not self.request.query.get("u"):
             res = web.Response(status=404)
             return res
         return await self.process()
 
     async def get(self):
-        print('GET headers')
-        print(self.request.headers)
+        log.debug('GET headers')
+        log.debug(self.request.headers)
         if not self.request.query.get("url") and not self.request.query.get("u"):
             res = web.Response(status=404, text="Missing Url Param")
             return res

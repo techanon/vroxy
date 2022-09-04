@@ -3,14 +3,17 @@ import time
 import re
 import random
 import multidict
+import logging as log
+
 from asyncio import sleep
 from typing import Optional
 from urllib.parse import urlparse
-from whitelist import DomainWhitelist, load_list
 from yt_dlp import YoutubeDL
-from app.normalize import normalizeUrl
+
+from app.config import config
 from app.exceptions import *
-from app.config import getConfig
+from app.normalize import normalizeUrl
+from app.whitelist import DomainWhitelist, load_list
 
 mode_map = {
     # default
@@ -39,7 +42,6 @@ sort_opts = {
 expire_regex = re.compile(r"exp(?:ir(?:es?|ation))?=(\d+)")
 nextGCTime = time.time() + 3600
 cache_map = {}
-config = getConfig()
 domain_whitelist: Optional[DomainWhitelist] = None
 
 if wl_path := config["server"]["whitelist"]:
@@ -89,7 +91,7 @@ class PoolCount:
         self.count -= 1
 
 
-pool_max = 10
+pool_max = config.get("ytdl", "pool_size", fallback=10)
 pool = PoolCount()
 
 
@@ -144,19 +146,18 @@ async def resolveUrl(query: multidict.MultiDictProxy[str]) -> str:
     if _id in cache_map:
         item = cache_map[_id]
         if item.expiry < curTime:
-            print(f"[{rid}] Cache expired")
+            log.debug(f"[{rid}] Cache expired")
             del cache_map[_id]
         else:
             # wait until the other request for the same url resolves,
             # then use the cached url from that
             while item.processing:
                 await sleep(1)
-            print(f"[{rid}] Resolving '{cacheId}' for url: {url}")
-            print(f"[{rid}] Cache hit")
-            print(item.resolved_url)
+            log.info(f"[{rid}] Resolving '{cacheId}' for url: {url}")
+            log.info(f"[{rid}] Cache hit. Using cached url.")
+            log.debug(f"[{rid}] {item.resolved_url}")
             print(
-                f"[{rid}] {item.resolved_format} expires in {item.expiry - curTime} seconds",
-                flush=True,
+                f"[{rid}] {item.resolved_format} expires in {item.expiry - curTime} seconds"
             )
             item.lastAccess = curTime
             return item.resolved_url or ""
@@ -167,11 +168,12 @@ async def resolveUrl(query: multidict.MultiDictProxy[str]) -> str:
     timeout = curTime + 30  # 30 seconds timelimit for waiting
     while pool.count >= pool_max:
         if curTime > timeout:
+            log.info(f"[{rid}] Request timed out waiting for pool slot ({pool.count})")
             return None
         await sleep(1)
     with YoutubeDL(ytdl_opts) as ytdl:
-        print(f"[{rid}] Resolving '{cacheId}' for url: {url}")
-        print(f"[{rid}] Fetching fresh info", flush=True)
+        log.info(f"[{rid}] Resolving '{cacheId}' for url: {url}")
+        log.info(f"[{rid}] Fetching fresh info")
         pool.add()
         try:
             result = ytdl.extract_info(url, download=False)
@@ -191,15 +193,15 @@ async def resolveUrl(query: multidict.MultiDictProxy[str]) -> str:
         # except ytdl.utils.UnavailableVideoError:
         #     pass
         except Exception as e:
-            print(str(e))
+            log.debug("Unexpected error happened with YTDL")
+            log.debug(str(e))
             raise
         # print(result.keys())
         item.resolve(result)
         pool.remove()
-        print(f"[{rid}] {item.resolved_url}")
-        print(
-            f"[{rid}] {item.resolved_format} expires in {item.expiry - curTime} seconds",
-            flush=True,
+        log.debug(f"[{rid}] {item.resolved_url}")
+        log.info(
+            f"[{rid}] {item.resolved_format} expires in {item.expiry - curTime} seconds"
         )
 
     item.lastAccess = curTime

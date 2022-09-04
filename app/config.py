@@ -10,7 +10,6 @@ config["server"] = {
     "port": os.getenv("PORT", "8008"),
     "whitelist": os.getenv("VROXY_WHITELIST", ""),
 }
-if path.isfile(path.join(path.dirname(__file__), "settings.ini")): 
-    config.read(path.join(path.dirname(__file__), "settings.ini"))
-
-def getConfig(): return config
+settings_file = path.join(path.dirname(__file__), "settings.ini");
+if path.isfile(settings_file): config.read(settings_file)
+del settings_file
