@@ -2,3 +2,6 @@
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "--ignore=tests_e2e"
+
+[tool.coverage.run]
+omit = ['*_test.py']
