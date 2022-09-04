@@ -37,5 +37,5 @@ jobs:
             reviewdog -f=flake8 \
               -name="flake8" \
               -reporter="github-check" \
-              -filter-mode="none" \
+              -filter-mode="nofilter" \
               -level="warning"
