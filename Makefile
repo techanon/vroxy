@@ -14,6 +14,13 @@ test:
 test-e2e:
 	./tests_e2e/run.sh
 
+.PHONY: lint
+lint: flake8
+
+.PHONY: flake8
+flake8:
+	$(DEV) flake8
+
 .PHONY: sh
 sh:
 	$(DEV) bash
