@@ -1,0 +1,16 @@
+# Based on https://docs.vrchat.com/docs/www-whitelist
+soundcloud.com
+drive.google.com
+facebook.com
+*.nicovideo.jp
+*.twitch.tv
+*.vimeo.com
+*.youku.com
+*.youtube.com
+youtu.be
+mixcloud.com
+*.vrcdn.live
+*.vrcdn.video
+
+# ProTV3 domain whitelist compatibility
+streamable.com

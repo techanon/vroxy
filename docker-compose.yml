@@ -5,6 +5,7 @@ services:
     environment:
       - VROXY_HOST=0.0.0.0
       - PORT=8008
+      - VROXY_WHITELIST=/vroxy/config/vrchat-whitelist.txt
     build:
       context: .
       target: base

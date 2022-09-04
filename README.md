@@ -45,6 +45,26 @@ Optional parameters:
 
 TODO: Add discord embed support ala https://github.com/robinuniverse/TwitFix/blob/main/templates/index.html because why not?
 
+## Configuration
+
+Use the following environment variables to configure the server.
+
+Name | Purpose | Default
+--|--|--
+`VROXY_HOST` | The host the server should bind to. | `0.0.0.0`
+`PORT` | Port the server should bind to. | `8008`
+`VROXY_WHITELIST` | Path to a whitelist file | No whitelist
+
+### Whitelist file
+
+You may provide a whitelist file path via `VROXY_WHITELIST`. This is a text file where each line is a domain pattern to whitelist.
+You may specify:
+- Fully qualified domains: `[subdomain.]domain.tld`
+- Wildcard subdomains: `*.domain.tld`
+- Use `#` to add comments.
+
+We include [an example config](/config/vrchat-whitelist.txt) which attempts to match the [VRChat Video Player Whitelist](https://docs.vrchat.com/docs/www-whitelist).
+
 ## Docker deployment
 
 In general you can deploy `ghcr.io/techanon/vroxy:dev` to any platform that supports running docker containers.
