@@ -3,3 +3,6 @@
 !.dockerignore
 *pycache*
 settings.ini
+
+coverage.xml
+/htmlcov

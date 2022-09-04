@@ -8,7 +8,7 @@ requirements.txt: requirements.in
 
 .PHONY: test
 test:
-	$(DEV) pytest
+	$(DEV) pytest --cov --cov-report=html --cov-report=xml
 
 .PHONY: test-e2e
 test-e2e:
