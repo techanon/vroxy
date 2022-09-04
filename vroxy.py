@@ -37,6 +37,7 @@ class YTDLProxy(web.View):
 
     async def process(self):
         url = None
+        res = web.Response(status=500)
         try:
             url = await resolveUrl(self.request.query)
             res = web.Response(status=307, headers={"Location": url})
@@ -54,7 +55,7 @@ class YTDLProxy(web.View):
             res = web.Response(status=410)
         except Error429TooManyRequests:
             res = web.Response(status=429)
-        except:
+        except Exception:
             res = web.Response(status=500)
         return res
 
