@@ -54,6 +54,7 @@ Name | Purpose | Default
 `VROXY_HOST` | The host the server should bind to. | `0.0.0.0`
 `PORT` | Port the server should bind to. | `8008`
 `VROXY_WHITELIST` | Path to a whitelist file | No whitelist
+`VROXY_AUTH_TOKENS` | comma separated list of bearer tokens. Enables authorization. | Unauthorized access allowed
 
 ### Whitelist file
 

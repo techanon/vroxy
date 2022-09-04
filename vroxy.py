@@ -4,6 +4,7 @@ import logging as log
 from aiohttp import web
 
 from app.config import config
+from app.middleware import makeTokenAuthzMiddleware
 from app.resolver import resolveUrl
 from app.exceptions import *
 
@@ -62,6 +63,11 @@ async def strip_headers(req: web.Request, res: web.StreamResponse):
     del res.headers['Server']
 
 app = web.Application()
+if auth_tokens_config := config["server"].get("auth_tokens"):
+    auth_tokens = [t.strip() for t in auth_tokens_config.split(",")]
+    authz_middleware = makeTokenAuthzMiddleware(auth_tokens)
+    app.middlewares.append(authz_middleware)
+
 app.add_routes(routes)
 app.on_response_prepare.append(strip_headers)
 print("Starting Vroxy server.")
