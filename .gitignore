@@ -3,3 +3,4 @@
 !.dockerignore
 *pycache*
 settings.ini
+!.flake8

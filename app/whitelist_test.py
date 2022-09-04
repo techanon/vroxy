@@ -1,4 +1,3 @@
-from string import whitespace
 from whitelist import load_list, WhitelistedDomain, _parse_line
 
 
