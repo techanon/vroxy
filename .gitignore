@@ -3,6 +3,7 @@
 !.dockerignore
 *pycache*
 settings.ini
+!.flake8
 
 coverage.xml
 /htmlcov
