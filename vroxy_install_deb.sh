@@ -59,6 +59,9 @@ server {
     location / {
         proxy_pass http://127.0.0.1:$port;
     }
+    
+    error_log /var/log/nginx/$domain.error.log;
+    access_log /var/log/nginx/$domain.access.log;
 }
 EOF
 echo NGINX Configuration stored in /etc/nginx/conf.d/$domain.conf
