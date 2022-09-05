@@ -24,6 +24,20 @@ jobs:
       - name: run e2e tests
         run: |
           make test-e2e
+
+  e2e_install_script:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        e2e_os: ["debian:bullseye"]
+    env:
+      E2E_OS: ${{ matrix.e2e_os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: run install
+        run: |
+          ./tests_e2e/test_deb_setup.sh
+
   lint:
     runs-on: ubuntu-latest
     env:

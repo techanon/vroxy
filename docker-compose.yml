@@ -41,7 +41,7 @@ services:
     profiles:
       - donotstart
   vroxy-install-e2e.test:
-    image: debian:bullseye
+    image: ${E2E_OS:-debian:bullseye}
     command: tail -F /dev/null
     environment:
       - CI=true
