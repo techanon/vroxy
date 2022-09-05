@@ -15,21 +15,21 @@ log.basicConfig(level=log.DEBUG)
 @routes.view("/healthz")
 class Health(web.View):
     async def get(self):
-        return web.Response(text="OK")
+        return web.Response(status=200, text="OK")
 
 @routes.view("/")
 class YTDLProxy(web.View):
     async def head(self):
-        log.debug('HEAD headers')
-        log.debug(self.request.headers)
+        # log.debug('HEAD headers')
+        # log.debug(self.request.headers)
         if not self.request.query.get("url") and not self.request.query.get("u"):
             res = web.Response(status=404)
             return res
         return await self.process()
 
     async def get(self):
-        log.debug('GET headers')
-        log.debug(self.request.headers)
+        # log.debug('GET headers')
+        # log.debug(self.request.headers)
         if not self.request.query.get("url") and not self.request.query.get("u"):
             res = web.Response(status=404, text="Missing Url Param")
             return res

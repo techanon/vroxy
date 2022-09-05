@@ -57,8 +57,11 @@ cat << EOF > /etc/nginx/conf.d/$domain.conf
 server {
     server_name $domain;
     location / {
-        proxy_pass http://localhost:$port;
+        proxy_pass http://0.0.0.0:$port;
     }
+    
+    error_log /var/log/nginx/$domain.error.log;
+    access_log /var/log/nginx/$domain.access.log;
 }
 EOF
 echo NGINX Configuration stored in /etc/nginx/conf.d/$domain.conf
