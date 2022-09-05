@@ -40,6 +40,35 @@ services:
       - VROXY_AUTH_TOKENS=abc,123
     profiles:
       - donotstart
+  vroxy-install-e2e.test:
+    image: ${E2E_OS:-debian:bullseye}
+    command: tail -F /dev/null
+    environment:
+      - CI=true
+      - DEBIAN_FRONTEND=noninteractive
+      - domain=vroxy-install-e2e.test
+      - acme_server=https://pebble:14000/dir
+    working_dir: /vroxy
+    volumes:
+      - .:/vroxy
+    profiles:
+      - donotstart
+  pebble:
+    image: letsencrypt/pebble:latest
+    command: pebble -config /test/config/pebble-config.json -strict -dnsserver 10.30.50.3:8053
+    # ports:
+    #   - 14000:14000  # HTTPS ACME API
+    #   - 15000:15000  # HTTPS Management API
+    environment:
+      - PEBBLE_VA_ALWAYS_VALID=1
+    profiles:
+      - vroxy_install
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "--no-check-certificate", "https://localhost:14000/dir"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
   dev:
     build:
       context: .
