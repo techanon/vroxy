@@ -136,17 +136,22 @@ if [ $SUDO_USER ]; then
     chown -R $SUDO_USER $dir
 fi
 cd $dir
-if [[ ! -d "$dir/.git" ]]; then
-    git clone https://github.com/techanon/vroxy.git $dir
-    git config pull.ff only
+if [[ "$CI" == "true" ]]; then
+    # in a CI environment we want to test the files we have on disk, not remote
+    cp -a /vroxy/. .
 else
-    # if it already exists, just grab the latest instead
-    git pull
+    if [[ ! -d "$dir/.git" ]]; then
+        git clone https://github.com/techanon/vroxy.git $dir
+        git config pull.ff only
+    else
+        # if it already exists, just grab the latest instead
+        git pull
+    fi
 fi
 cat << EOF > settings.ini
 [server]
 domain=$domain
-host=localhost
+host=0.0.0.0
 port=$port
 EOF
 python3 -m pip install -U yt-dlp aiohttp tldextract

@@ -17,7 +17,8 @@ apt-get install -y --no-install-recommends \
     ca-certificates \
     cron \
     curl \
-    git
+    git \
+    procps
 
 curl -o /usr/local/share/ca-certificates/pebble.minica.crt https://raw.githubusercontent.com/letsencrypt/pebble/main/test/certs/pebble.minica.pem
 
