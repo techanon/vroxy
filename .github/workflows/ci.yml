@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        e2e_os: ["debian:bullseye"]
+        e2e_os: ["debian:bullseye", "ubuntu:22.04"]
     env:
       E2E_OS: ${{ matrix.e2e_os }}
     steps:
