@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo This script will automatically setup all dependencies and an NGINX server with a LetsEncrypt SSL cert.
 
 if [[ `whoami` != root ]]; then
@@ -7,12 +9,20 @@ if [[ `whoami` != root ]]; then
     exit
 fi
 
-echo '
+is_interactive="1"
+if [[ -n "$DEBIAN_FRONTEND" && "$DEBIAN_FRONTEND" == "noninteractive" ]]; then
+    echo "Running in noninteractive mode"
+    is_interactive="0"
+fi
 
->>> Some information is needed from you <<<
+if [[ $is_interactive == "1" ]]; then
+    echo '
 
-'
-read -p "Please select the folder for Vroxy to install into or update in (leave empty for /var/vroxy): " dir
+    >>> Some information is needed from you <<<
+
+    '
+    read -p "Please select the folder for Vroxy to install into or update in (leave empty for /var/vroxy): " dir
+fi
 
 if [ ! $dir ]; then dir='/var/vroxy'; fi
 if [[ -f "$dir/settings.ini" ]]; then
@@ -25,8 +35,10 @@ domainmsg='required'
 if [ $defaultdomain ]; then domainmsg="leave empty for $defaultdomain"; fi
 
 
-read -p "Please enter the domain name you wish to setup with the NGINX configuration ($domainmsg): " domain
-read -p "Please specify what port to run the Vroxy service on (leave empty for $defaultport): " port
+if [[ $is_interactive == "1" ]]; then
+    read -p "Please enter the domain name you wish to setup with the NGINX configuration ($domainmsg): " domain
+    read -p "Please specify what port to run the Vroxy service on (leave empty for $defaultport): " port
+fi
 
 if [ ! $port ]; then port=$defaultport; fi
 if [ ! $domain ]; then
@@ -65,41 +77,57 @@ server {
 }
 EOF
 echo NGINX Configuration stored in /etc/nginx/conf.d/$domain.conf
-nginx -t && nginx -s reload
+
+nginx -t
+if [[ -s /run/nginx.pid ]]; then
+    nginx -s reload
+fi
 
 echo ---
 echo Setting up LetsEncrypt
 echo ---
 
-certbot -n --nginx --redirect --no-eff-email --agree-tos --register-unsafely-without-email -d $domain
-croninfo=$(crontab -l)
-if echo $croninfo | grep -Fxq '0 12 * * * /usr/bin/certbot renew --quiet'; then
+extra_cb_args=""
+
+if [[ -n "$acme_server" ]]; then
+    extra_cb_args="$extra_cb_args --server $acme_server"
+fi
+
+certbot \
+    -n \
+    --nginx \
+    --redirect \
+    --no-eff-email \
+    --agree-tos \
+    --register-unsafely-without-email \
+    $extra_cb_args \
+    -d $domain
+
+if [[ -f /etc/cron.d/certbot ]]; then
     echo LetsEncrypt Autorenew cron found. Skipping.
 else
-    croninfo="$croninfo
-    # Lets Encrypt SSL Autorenew
-    0 12 * * * /usr/bin/certbot renew --quiet
-    "
-    echo $croninfo | crontab -
+    cat << 'EOF' > /etc/cron.d/certbot
+# Lets Encrypt SSL Autorenew
+0 12 * * * root /usr/bin/certbot renew --quiet
+EOF
     echo LetsEncrypt Autorenew cron added.
 fi
-if echo $croninfo | grep -xq "vroxy_reload.sh"; then
-    # replace any old directory service cron with the new directory service cron
-    croninfo=$(echo $croninfo | sed -r "s|bash .+/vroxy_reload\.sh|bash $dir/vroxy_reload.sh|g")
-    echo $croninfo | crontab -
-    echo Vroxy service auto-reload cron updated.
+
+if [[ -f /etc/cron.d/vroxy ]]; then
+    echo Vroxy service auto-reload cron found. Skipping.
 else
-    echo "$croninfo
-    # Vroxy service auto-reload
-    0 3 * * * bash $dir/vroxy_reload.sh
-    " | crontab -
+    cat << 'EOF' > /etc/cron.d/vroxy
+# Vroxy service auto-reload
+0 3 * * * root bash $dir/vroxy_reload.sh
+EOF
     echo Vroxy service auto-reload cron added.
 fi
+
 echo ---
 echo "Setting up Vroxy in $dir"
 echo ---
 mkdir $dir
-if [ ! $(git config --global --get-all safe.directory | grep "$dir")]; then
+if [ ! $(git config --global --get-all safe.directory | grep "$dir") ]; then
     # ensure that git knows that this new directory is safe
     git config --global --add safe.directory $dir
 fi
