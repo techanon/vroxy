@@ -3,36 +3,10 @@ Self-hosted light-weight server proxy for YoutubeDL, originally designed for use
 
 Currently in alpha.
 
-Prerequisites:
-- Ensure you have a VPS or better with a linux OS on it (debian is recommended). You will need to be able to run commands with escalated privilege.
-- Ensure you have a domain name setup correctly with the desired DNS A entry pointing to your server's public IP address.
-
-Debian/Ubuntu Setup:
-- Pull the repo's install script and run it:  
-    - `wget -q https://raw.githubusercontent.com/techanon/vroxy/master/vroxy_install_deb.sh -O vroxy_install.sh && sudo bash ./vroxy_install.sh`
-    - This will pull in all dependencies and setup the nginx reverse proxy and SSL certs for you.
-    - The script will use `/var/vroxy` as the install folder by default, but you can specify another location if you wish.
-    - If running on an OS without the sudo command, you will either need to login as root `su -` or install sudo and add yourself as a sudo user.
-- Run the reload script to update and (re)start the service: `bash /var/vroxy/vroxy_reload.sh`
-- You can examine the service log with: `tmux a -t vroxy`
-- Exit tmux with `CTRL+B` followed by the `D` key.
-
-Generic Setup:
-- Setup a public facing server on your VPS or whatever.
-    - This requires something like Apache or Nginx and some SSL cert assigned (using LetsEncrypt's certbot tool is the recommended option)
-    - Quest _requires_ HTTPS, so the SSL cert is a must.
-- Install python3 (make sure the `pip` tool is also installed)
-- Clone this repo to the server at your desired file path. `/var/vroxy` is recommended.
-- Navigate your terminal to the given folder that Vroxy was cloned into.
-- Install the dependant packages for python via `python3 -m pip install -U yt-dlp aiohttp`
-- Copy example.ini to settings.ini and change the settings as you need
-- Run the server via `python3 /path/to/repo/vroxy.py`
-    - You may want to consider a terminal multiplexer (like tmux) to run the service without needing to be connected to the terminal.
-
-Usage:
+## Usage
 Access the url via `https://mydomain/?url=https://youtube.com/watch?v=VIDEO_ID` to receive a 307 redirect to the direct link video url.
 
-Optional parameters:
+### Optional parameters
 - `f`: Specific format id for the given url that is desired. This is something that is looked up ahead of time via manually checking --list-formats in ytdl.
 - `s`: Custom sort order for ytdl to determine what it thinks is 'best'. Sort order options can be found [Here](https://github.com/yt-dlp/yt-dlp/blob/release/README.md#sorting-formats)
 - `m`: Specific presets for sort order options
@@ -45,8 +19,6 @@ Optional parameters:
 If you specified authorization tokens in your configuration, use one of the following to authorize yourself:
 - Send an authorization header: `Authorization: Bearer <your token>`.
 - Use the `?token=<your token>` query parameter.
-
-TODO: Add discord embed support ala https://github.com/robinuniverse/TwitFix/blob/main/templates/index.html because why not?
 
 ## Configuration
 
@@ -69,11 +41,46 @@ You may specify:
 
 We include [an example config](/config/vrchat-whitelist.txt) which attempts to match the [VRChat Video Player Whitelist](https://docs.vrchat.com/docs/www-whitelist).
 
-## Docker deployment
+## Deployment
+
+### Prerequisites:
+- Ensure you have a VPS or better with a linux OS on it (debian is recommended). You will need to be able to run commands with escalated privilege.
+- Ensure you have a domain name setup correctly with the desired DNS A entry pointing to your server's public IP address.
+
+### Debian/Ubuntu Setup:
+
+Pull the repo's install script and run it:  
+```bash
+curl -o vroxy_install.sh https://raw.githubusercontent.com/techanon/vroxy/master/vroxy_install_deb.sh\
+  && sudo bash ./vroxy_install.sh
+```
+
+- This will pull in all dependencies and setup the nginx reverse proxy and SSL certs for you.
+- The script will use `/var/vroxy` as the install folder by default, but you can specify another location if you wish.
+- If running on an OS without the sudo command, you will either need to login as root `su -` or install sudo and add yourself as a sudo user.
+
+#### After install
+- Run the reload script to update and (re)start the service: `bash /var/vroxy/vroxy_reload.sh`
+- You can examine the service log with: `tmux a -t vroxy`
+- Exit tmux with `CTRL+B` followed by the `D` key.
+
+### Generic Setup:
+- Setup a public facing server on your VPS or whatever.
+    - This requires something like Apache or Nginx and some SSL cert assigned (using LetsEncrypt's certbot tool is the recommended option)
+    - Quest _requires_ HTTPS, so the SSL cert is a must.
+- Install python3 (make sure the `pip` tool is also installed)
+- Clone this repo to the server at your desired file path. `/var/vroxy` is recommended.
+- Navigate your terminal to the given folder that Vroxy was cloned into.
+- Install the dependant packages for python via `python3 -m pip install -U yt-dlp aiohttp`
+- Copy example.ini to settings.ini and change the settings as you need
+- Run the server via `python3 /path/to/repo/vroxy.py`
+    - You may want to consider a terminal multiplexer (like tmux) to run the service without needing to be connected to the terminal.
+
+### Docker deployment
 
 In general you can deploy `ghcr.io/techanon/vroxy:dev` to any platform that supports running docker containers.
 
-### VPS
+#### VPS
 
 On a bare VPS with [Docker][docker-install] and [docker-compose][docker-compose-install] installed:
 1. Clone the repo
@@ -82,7 +89,7 @@ On a bare VPS with [Docker][docker-install] and [docker-compose][docker-compose-
    docker-compose up -d
    ```
 
-### Google Cloud Platform: [Cloud Run](https://cloud.google.com/run)
+#### Google Cloud Platform: [Cloud Run](https://cloud.google.com/run)
 
 1. Push your docker container to [Google Cloud Registry](https://cloud.google.com/container-registry) or use the official one: <tbd>
 2. All the default settings should just work. But you might want to take care to look at the following settings:
@@ -91,7 +98,9 @@ On a bare VPS with [Docker][docker-install] and [docker-compose][docker-compose-
   - Allow unauthenticated invocations
 3. After a short initialization time, you should have a public service up and running
 
-## Docker development
+## Development
+
+### Docker development
 
 - Ensure you [have Docker installed][docker-install].
 - [Install docker-compose][docker-compose-install]
