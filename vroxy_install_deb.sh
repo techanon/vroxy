@@ -73,16 +73,6 @@ echo ---
 
 certbot -n --nginx --redirect --no-eff-email --agree-tos --register-unsafely-without-email -d $domain
 croninfo=$(crontab -l)
-if echo $croninfo | grep -Fxq '0 12 * * * /usr/bin/certbot renew --quiet'; then
-    echo LetsEncrypt Autorenew cron found. Skipping.
-else
-    croninfo="$croninfo
-    # Lets Encrypt SSL Autorenew
-    0 12 * * * /usr/bin/certbot renew --quiet
-    "
-    echo $croninfo | crontab -
-    echo LetsEncrypt Autorenew cron added.
-fi
 if echo $croninfo | grep -xq "vroxy_reload.sh"; then
     # replace any old directory service cron with the new directory service cron
     croninfo=$(echo $croninfo | sed -r "s|bash .+/vroxy_reload\.sh|bash $dir/vroxy_reload.sh|g")
