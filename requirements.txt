@@ -57,5 +57,5 @@ websockets==10.3
     # via yt-dlp
 yarl==1.7.2
     # via aiohttp
-yt-dlp==2022.9.1
+yt-dlp==2022.10.4
     # via -r requirements.in
